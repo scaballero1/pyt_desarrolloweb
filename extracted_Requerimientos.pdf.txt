@@ -1,0 +1,93 @@
+--- Page 1 ---
+Requerimientos funcionales 
+• 
+El sistema debe permitir a los usuarios iniciar sesión con sus credenciales. 
+• 
+El sistema debe permitir al mesero consultar el estado de las mesas (Libre/Ocupada). 
+• 
+El sistema debe permitir al mesero crear un pedido, asociarlo a una mesa y registrar un 
+timestamp automáticamente. 
+• 
+El sistema debe asignarle a cada pedido nuevo el estado PENDIENTE. 
+• 
+El sistema debe permitirle al mesero agregar productos a un pedido, incluyendo cantidad 
+y notas adicionales. 
+• 
+El sistema deberá permitir al mesero eliminar productos de un pedido mientras este se 
+encuentre en estado PENDIENTE. 
+• 
+El sistema debe mostrar a la cocina los pedidos en estado PENDIENTE según su orden de 
+creación. 
+• 
+El sistema debe permitirle a la cocina tomar un pedido pendiente, lo que cambia su estado 
+de PENDIENTE a EN PREPARACIÓN. 
+• 
+El sistema deberá permitir a cocina cambiar el estado de un pedido de EN PREPARACIÓN a 
+LISTO cuando haya terminado su preparación. 
+• 
+El sistema debe permitir al mesero visualizar los pedidos con estado LISTO y cambiar su 
+estado a ENTREGADO cuando lo entreguen. 
+• 
+El sistema deberá permitir cancelar un pedido únicamente cuando se encuentre en estado 
+PENDIENTE o EN PREPARACIÓN. 
+• 
+Al cancelar un pedido, el sistema deberá cambiar su estado a CANCELADO. 
+• 
+El sistema solo permitirá cambiar el estado de un pedido a CANCELADO únicamente si este 
+está en estado PENDIENTE o EN PREPARACIÓN. 
+• 
+El sistema deberá registrar pedido, estado, fecha y hora del cambio y usuario responsable 
+cada vez que el estado de un pedido cambie. 
+• 
+El sistema deberá permitir al administrador crear, modificar y desactivar productos. 
+• 
+El sistema deberá permitir al administrador registrar y actualizar el precio, descripción, 
+categoría y disponibilidad de cada producto. 
+• 
+El sistema deberá permitir consultar el historial de estados de cada pedido. 
+• 
+El sistema deberá utilizar el historial de estados para calcular el tiempo que permanece un 
+pedido en cada etapa. 
+• 
+El sistema deberá actualizar automáticamente la fecha de última actualización del pedido 
+cada vez que este sea modificado. 
+Requerimientos no funcionales 
+• 
+El sistema debe gestionar y limitar el acceso del usuario de acuerdo a sus roles (Mesero, 
+Cocina, Administrador). 
+• 
+El sistema deberá enviar un mensaje otp a los usuarios cada vez que inicien sesión con sus 
+credenciales para mantener la seguridad de las cuentas. 
+• 
+El historial de estados deberá conservarse de manera íntegra y no deberá modificarse 
+como consecuencia de una actualización posterior del pedido. 
+• 
+El sistema deberá registrar la fecha y hora de las operaciones utilizando solamente 
+FECHA/HORA:MINUTO:SEGUNDO 
+--- Page 2 ---
+• 
+Los cambios de estado realizados por cocina deberán ser visibles para los meseros sin 
+necesidad de duplicar manualmente la información. 
+• 
+El sistema deberá soportar múltiples usuarios conectados simultáneamente. 
+• 
+La interfaz deberá ser sencilla e intuitiva para permitir que meseros y personal de cocina 
+puedan operar el sistema con una capacitación mínima. 
+• 
+El sistema deberá utilizar mensajes claros para informar al usuario cuando una operación 
+no pueda realizarse. 
+• 
+El sistema deberá validar los datos introducidos antes de almacenarlos en la base de 
+datos. 
+• 
+El sistema deberá evitar que se registren productos con cantidades inválidas, precios 
+negativos o información obligatoria vacía. 
+• 
+El sistema deberá permitir realizar mantenimiento y actualizaciones sin afectar 
+innecesariamente la información almacenada. 
+• 
+El sistema deberá estar diseñado de forma modular para facilitar la incorporación futura 
+de nuevas funcionalidades. 
+• 
+La interfaz deberá adaptarse a los dispositivos utilizados en el restaurante, como 
+computadores, tablets o terminales de cocina. 

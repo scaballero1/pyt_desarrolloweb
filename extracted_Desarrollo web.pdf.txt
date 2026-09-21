@@ -1,0 +1,391 @@
+--- Page 1 ---
+ 
+ 
+PROCESO:  
+Diseño y Desarrollo de 
+Programas Académicos 
+FORMATO 
+Código: JD-RG-002 
+SÍLABO DE MÓDULOS PREGRADO Y POSGRADO  
+MODALIDAD PRESENCIAL 
+Versión: 4 
+ 
+“Este documento es propiedad intelectual del POLITECNICO GRANCOLOMBIANO, se prohíbe su reproducción total 
+o parcial sin la autorización escrita de la Rectoría. TODO DOCUMENTO IMPRESO O DESCARGADO DEL SISTEMA, 
+ES CONSIDERADO COPIA NO CONTROLADA”.  
+Página 1 de 5 
+FACULTAD DE INGENIERÍA, DISEÑO E INNOVACIÓN 
+ESCUELA DE TECNOLOGÍAS DE LA INFORMACIÓN Y LAS COMUNICACIONES 
+ 
+I. 
+DATOS BÁSICOS DEL MODULO 
+NOMBRE DEL MODULO 
+Desarrollo web 
+CÓDIGO DEL MODULO  
+TIC41452 
+CICLO DE FORMACIÓN 
+Pregrado 
+PROGRAMA 
+Tecnología en Desarrollo de Software 
+BLOQUE DE FORMACIÓN 
+Programa 
+NÚMERO DE CRÉDITOS 
+3 
+DURACIÓN   
+16 semanas 
+ 
+II. 
+DESCRIPCIÓN DEL MODULO 
+Las aplicaciones web son un tipo de software ejecutado desde el servidor y consumido por los clientes mediantes los navegadores 
+de la internet.  
+Hoy en día, las aplicaciones web se han convertido en unas de las preferidas dentro de la industria del software gracias a sus 
+importantes ventajas, como: la escalabilidad, la portabilidad, la usabilidad y la mantenibilidad. Esa preferencia propicia una amplia 
+demanda de personas especializadas en su construcción.  
+En consecuencia, la asignatura desarrollo web es relevante dentro del plan de estudios porque tiene como próposito la compresión 
+y el dominio de las algunas de las tecnologías necesarias para el desarrollo de aplicaciones web. 
+ 
+ 
+ 
+III. 
+INDICADORES DE LOGRO  
+ 
+1. 
+Construye la implementación de la parte del servidor usando un framework para generar una aplicación web  
+2. 
+Construye la implementación de la parte del cliente usando un framework para generar una aplicación web  
+3. 
+Adapta las implementaciones de la parte del servidor y de la parte del cliente para entregar una aplicación web 
+ 
+ 
+IV. 
+NÚCLEOS TEMÁTICOS   
+ 
+1. Conceptos de la arquitectura de las aplicaciones web 
+2. Framework de desarrollo para parte del servidor, capa de lógica de negocio o backend  
+3. Librerias disponibles en los frameworks 
+4. Framework de desarrollo para parte del cliente, capa de presentación o frontend 
+NÚCLEO TEMÁTICO 1. Conceptos de la arquitectura de las aplicaciones web 
+EJES TEMÁTICOS: 
+ 
+• 
+Arquitectura SOA 
+• 
+REST API 
+--- Page 2 ---
+ 
+ 
+ 
+PROCESO:  
+Diseño y Desarrollo de 
+Programas Académicos 
+FORMATO 
+Código: JD-RG-002 
+SÍLABO DE MÓDULOS PREGRADO Y POSGRADO  
+MODALIDAD VIRTUAL 
+Versión: 4 
+ 
+Página 2 de 5 
+• 
+RESTful web services 
+NÚCLEO TEMÁTICO 2. Framework de desarrollo para parte del servidor, capa de lógica de negocio o backend 
+EJES TEMÁTICOS: 
+ 
+• 
+Identificación de los frameworks más conocidos para backend 
+• 
+Características de frameworks para backend 
+• 
+Construcción de aplicaciones web desde la parte del servidor usando frameworks 
+NÚCLEO TEMÁTICO  3. Librerias disponibles en los frameworks 
+EJES TEMÁTICOS: 
+ 
+• 
+Object/Relational Mapping (ORM) 
+• 
+Librerías para accesos a bases de datos relacionales y NoSQL 
+• 
+Librerias para seguridad 
+• 
+LIbrerias para envío de correos y SMS 
+NÚCLEO TEMÁTICO  4. Framework de desarrollo para parte del cliente, capa de presentación o frontend 
+EJES TEMÁTICOS: 
+ 
+• 
+Identificación de los frameworks más conocidos para frontend 
+• 
+Características de frameworks para frontend 
+• 
+Introducción a javascript y typescript 
+• 
+Construcción de aplicaciones web desde la parte del cliente usando frameworks 
+• 
+Integración de backend y frontend 
+ 
+V. 
+METODOLOGÍA 
+En correspondencia con los postulados del Modelo Pedagógico del Politécnico Grancolombiano se emplean metodologías activas 
+en los procesos de enseñanza y de aprendizaje, con el fin de hacer que los estudiantes:  
+  
+• 
+Se conviertan en responsables de su propio aprendizaje, desarrollando competencias de pensamiento crítico y las 
+habilidades de búsqueda, selección, análisis y evaluación de la información utilizando herramientas acordes a la época 
+(para el caso actual corresponde a la tecnología).  
+• 
+Participen en actividades que les permitan intercambiar experiencias y opiniones con sus compañeros (competencias de 
+trabajo en grupo).  
+• 
+Lleven a cabo procesos de reflexión sobre lo que hacen, cómo lo hacen y qué resultados logran (competencias 
+metacognitivas).  
+• 
+Tengan conciencia de su entorno y realidad cotidiana a través de actividades, como trabajo de proyectos o estudios de 
+casos, entre otros, en los que usen los conocimientos disciplinares y sean conscientes de estos (métodos para el 
+aprendizaje).  
+  
+Para esto, las actividades académicas de las asignaturas se organizan a través de un conjunto de estrategias y secuencias didácticas 
+que vinculan métodos, contenidos, materiales y actividades en función de los resultados de aprendizaje que un estudiante debe 
+alcanzar en correspondencia con los indicadores de logro que contribuyen al alcance de estos. Los procesos de enseñanza y de 
+aprendizaje están diseñados para mediar, interactuar, desarrollar, crear y evaluar el progreso de los estudiantes de acuerdo con la 
+siguiente tipología:  
+ 
+TIPOLOGÍA  
+DESCRIPCIÓN  
+MÉTODO Y 
+ESTRATEGIAS  
+DURACIÓN  
+--- Page 3 ---
+ 
+ 
+ 
+PROCESO:  
+Diseño y Desarrollo de 
+Programas Académicos 
+FORMATO 
+Código: JD-RG-002 
+SÍLABO DE MÓDULOS PREGRADO Y POSGRADO  
+MODALIDAD VIRTUAL 
+Versión: 4 
+ 
+Página 3 de 5 
+Teórico Práctica 
+Comprende los módulos en los cuales se privilegia la 
+aplicación de conceptos, definiciones o fundamentos 
+básicos de carácter teórico, a través de metodologías 
+que combinan elementos teóricos y prácticos, teniendo 
+en cuenta un contexto o ámbito específico. 
+Descubrimiento, 
+problemas, casos o 
+ejemplos. 
+16 semanas 
+  
+Método  
+  
+De acuerdo con la tipología de la asignatura, se emplean los métodos de: i) descubrimiento en el cual se generan hipótesis teniendo 
+en cuenta estrategias de comparación, análisis y semejanzas que se adaptan al esquema cognitivo; el aprendizaje no se presenta al 
+final, sino a través del proceso, y ii) por problemas en el cual aprendizaje parte de la formulación de un problema, cuya solución 
+se construye a través de la adquisición y consolidación de conceptos, actividades de reflexión y análisis de posibles soluciones. 
+ 
+Recursos  
+ 
+Para el desarrollo de la asignatura se utilizan recursos disponibles en plataformas como MOODLE, escritorios remotos, espacios 
+físicos y otros, en los que el estudiante encuentra:   
+  
+• 
+Lecturas fundamentales y complementarias (a algunas de las cuales se podrá acceder a través de la biblioteca virtual 
+institucional), y materiales de apoyo y actividades de refuerzo, con el fin de apoyar el aprendizaje de las temáticas 
+tratadas.   
+• 
+Herramientas para el desarrollo de encuentros sincrónicos, a través de Teams, y de interacciones asincrónicas, por 
+medio de anuncios y mensajería interna, siempre que el profesor vea pertinente su uso. También se requiere de 
+herramientas de apoyo para el diseño y la construcción de aplicaciones web, como: frameworks (backend y frontend), 
+bases de datos (relacionales y NoSQL) e interacción con las API.  
+ 
+Estrategia(s) y actividades de enseñanza y de aprendizaje  
+  
+Las estrategias y actividades se presentan al largo de la asignatura a través de: 
+Trabajo directo con acompañamiento sincrónico: 
+• 
+Presentación magistral de los ejes temáticos, con participación de los estudiantes. 
+• 
+Uso de elementos asociados con los métodos de: 
+• 
+Aprendizaje basado en problemas 
+• 
+Clase expositiva 
+• 
+TIC 
+• 
+Según la pertinencia que evidencie el profesor que acompaña el proceso formativo. 
+• 
+Desarrollo de talleres y ejercicios según las necesidades que van emergiendo en el proceso formativo. 
+• 
+Ampliación y resolución de inquietudes conceptuales, casos o problemas. 
+• 
+Realización de acciones de retroalimentación sobre las actividades de aprendizaje y evaluativas. 
+• 
+Uso de materiales de apoyo, como actividades introductorias, la declaración de objetivos, la elaboración de resúmenes, 
+de organizadores previos, gráficos y textuales, figuras, ilustraciones, tablas, y mapas y redes conceptuales u otras 
+representaciones, según se requiera y que favorezcan la comprensión y apoyen el abordaje de los contenidos 
+conceptuales, procedimentales o actitudinales a tratar. 
+ 
+Trabajo directo con acompañamiento asincrónico:  
+ 
+--- Page 4 ---
+ 
+ 
+ 
+PROCESO:  
+Diseño y Desarrollo de 
+Programas Académicos 
+FORMATO 
+Código: JD-RG-002 
+SÍLABO DE MÓDULOS PREGRADO Y POSGRADO  
+MODALIDAD VIRTUAL 
+Versión: 4 
+ 
+Página 4 de 5 
+Comunicación por mensajería interna como mecanismo de interacción personal, para contribuir al seguimiento del aprendizaje de 
+los estudiantes respondiendo sus inquietudes, recordándoles los elementos generales de las actividades de trabajo directo o 
+independiente que deben desarrollar, así como de las actividades de trabajo colaborativo, cuando las haya. 
+ 
+Trabajo independiente con acompañamiento asincrónico:  
+ 
+• 
+ Realización de lecturas para promover el aprendizaje y motivar la indagación para ampliar el conocimiento respecto a 
+los temas por tratar.   
+• 
+Revisión del material complementario para ahondar en los temas centrales.    
+• 
+Desarrollo de talleres o actividades de aprendizaje individuales o grupales, entre las cuales se puede emplear la estrategia 
+de proyecto de investigación formativa. 
+• 
+Elaboración de materiales como resúmenes, organizadores previos, gráficos y textuales, figuras, ilustraciones, tablas, y 
+mapas y redes conceptuales u otras representaciones, según se requiera y que favorezcan la comprensión y apoyen el 
+abordaje de los contenidos conceptuales, procedimentales o actitudinales a tratar. 
+• 
+Análisis de casos o problemas asociados con los temas por tratar a lo largo de la asignatura. 
+ 
+ 
+VI. 
+EVALUACIÓN 
+Las técnicas y métodos para evaluar son diversos y se organizan acorde con las necesidades y tipologías de las asignaturas. Cada 
+asignatura evalúa en coherencia con los indicadores de logro declarados, los cuales dan cuenta de los niveles alcanzados a través 
+de las actividades evaluativas de tipo formativo o sumativo, y cuyo desarrollo se hace de manera individual o grupal, en concordancia 
+con su propósito. Para esta asignatura se caracteriza por lo siguiente:  
+    
+TIPOLOGÍA  
+EVALUACIÓN  
+DURACIÓN  
+Teórico Práctica 
+Da cuenta de la apropiación de conceptos y teorías y su respectiva 
+aplicación en contexto. Se plantean casos o problemas desde el 
+aprendizaje por problemas. 
+16 semanas  
+ 
+La evaluación sumativa comprende los logros obtenidos en cada una de las actividades, así como en todo el proceso, representados 
+en porcentajes acumulativos en coherencia con la parametrización que va de 0 a 5; las actividades tienen pesos diferentes, de 
+acuerdo con su complejidad y tipología; siendo una asignatura teórica la evaluación sumativa da cuenta de la asimilación, 
+conceptualización, comparación o contraste de teorías y conceptos. A continuación, la estructura de las actividades: 
+ 
+• 
+Resolución de problemas 
+• 
+Desarrollo de proyectos 
+• 
+Talleres 
+• 
+Pruebas escritas 
+  
+La evaluación formativa con el análisis de contextos, la discusión a través de preguntas intercaladas, el uso de mapas conceptuales, 
+desarrollo de casos y ejercicios prácticos, según las necesidades del proceso formativo. Para lo anterior, se puede contemplar la 
+incorporación de elementos orientados a la:   
+• 
+Autoevaluación: comprende la valoración que hace el estudiante de sus propias acciones y productos. Desarrolla la 
+capacidad crítica, favorece la autonomía y capacidad para tomar decisiones, permite reformular su método de aprendizaje 
+y autogestión incluyendo la organización de su tiempo.   
+• 
+Coevaluación: se refiere a la evaluación entre pares, fortalece la capacidad crítica, la comunicación asertiva, motiva el 
+aprendizaje colaborativo.   
+• 
+Heteroevaluación: se comprende como la evaluación que hace el tutor al estudiante, y a su vez, la evaluación que hace 
+--- Page 5 ---
+ 
+ 
+ 
+PROCESO:  
+Diseño y Desarrollo de 
+Programas Académicos 
+FORMATO 
+Código: JD-RG-002 
+SÍLABO DE MÓDULOS PREGRADO Y POSGRADO  
+MODALIDAD VIRTUAL 
+Versión: 4 
+ 
+Página 5 de 5 
+el estudiante al tutor.  
+ 
+De otra parte, las acciones de realimentación que se propone emplear a lo largo del proceso formativo para acompañar y apoyar 
+el aprendizaje de los estudiantes son: 
+ 
+• 
+Formar: donde se crean las condiciones para que los estudiantes adquieran conocimientos, habilidades, actitudes, 
+aptitudes y destrezas. Además, debe promover su desarrollo integral y debe acompañarlos en las situaciones académicas 
+que enfrenten durante el desarrollo de un módulo o una asignatura.  
+• 
+Informar: para que los estudiantes identifiquen los cambios que pueden afectarlos directa o indirectamente tanto en el 
+aula de clase como en otros espacios. 
+• 
+Prevenir: con el fin de anticiparse a las situaciones académicas que pueden representar dificultad para los estudiantes. 
+Esto se logra a través de la interacción individual con los estudiantes y del completo conocimiento del contexto educativo 
+en que el tutor se desenvuelve.  
+• 
+Ayudar a decidir: donde se orienta a los estudiantes para que tomen la mejor decisión ante una situación concreta. El 
+objetivo es que el estudiante fortalezca su autonomía y la toma de decisiones responsable. 
+ 
+Y el profesor, de acuerdo con las estrategias, recursos y los mecanismos de mediación las llevará a cabo, según las condiciones y 
+necesidades que se observen en el trabajo directo e independiente. 
+ 
+ 
+VII. 
+APOYOS REFERENCIALES  
+BIBLIOGRÁFICOS  
+• 
+Alvarez-Eraso, D. A., & Arango-Isaza, F.  (2016). Hibernate and spring - An analysis of maintainability against performance. Revista Facultad 
+de Ingeniería Universidad de Antioquia,  (80), 97-108.  
+• 
+Angular. (2023, Enero 13) What is Angular?. https://angular.io/guide/what-is-angular 
+• 
+Engelke, C., & Fitzgerald, C. (2010). Replacing Legacy Web Services with RESTful Services. Proceedings of the First International Workshop 
+on RESTful Design, 27–30. Presented at the Raleigh, North Carolina, USA. Doi:10.1145/1798354.1798381 
+• 
+Liang, Y. D. (2018). Introduction to Java programming and data structures. New York, NY: :Pearson Education. 
+• 
+McFarland, D. S., & Madruga Payno, Javier. (2016). JavaScript & jQuery (Tercera edición). Madrid: : Ediciones Anaya Multimedia. 
+• 
+Ortega Candel, J. M. (2018). Seguridad en aplicaciones Web Java.. RA-MA Editorial. https://elibro.net/es/lc/poligran/titulos/106511 
+• 
+Pérez 
+Martínez, 
+E. 
+(2015). 
+Desarrollo 
+de 
+aplicaciones 
+mediante 
+el 
+Framework 
+de 
+Spring.. 
+RA-MA 
+Editorial. 
+https://elibro.net/es/lc/poligran/titulos/107207 
+• 
+React. (2023, enero 13). Getting Started. https://reactjs.org/docs/getting-started.html 
+• 
+Rubiales Gómez, M. (2021). Curso de desarrollo Web. HTML, CSS y JavaScript. Edición 2021. 1. Difusora Larousse - Anaya Multimedia. 
+https://elibro.net/es/lc/poligran/titulos/217150 
+• 
+Santos López, F. M.,  (2012). Diseño de un módulo de carga de pagos en entidades públicas mediante mensajería con spring framework. 
+Industrial Data, 15(2), 73-79.  
+• 
+SpringBoot. (2023, Enero 13). Guides. https://spring.io/guides 
+ 

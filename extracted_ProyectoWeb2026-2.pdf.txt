@@ -1,0 +1,105 @@
+--- Page 1 ---
+Proyecto de curso: Sistema de Gestión de Pedidos — PoliRestaurante 
+Yamid Ramirez, MsC 
+1. Contexto 
+PoliRestaurante es un restaurante de comida rápida que atiende tanto en salón como para 
+llevar. Actualmente los pedidos se toman en papel, lo que genera errores de comunicación 
+entre los meseros y la cocina, pérdida de tickets, demoras en la preparación y dificultad para 
+saber en qué estado va cada pedido. 
+La administración del restaurante ha contratado a su equipo de desarrollo para construir un 
+sistema de gestión de pedidos que digitalice este proceso, permitiendo que meseros, 
+cocina y administración trabajen sobre la misma información en tiempo real. 
+Este proyecto debe desarrollarse cubriendo las cinco fases del ciclo de vida del software: 
+análisis, diseño, construcción, pruebas y despliegue. Cada fase tiene entregables 
+obligatorios que se evalúan de forma independiente. 
+2. Objetivo general 
+Diseñar y construir un sistema web que permita gestionar el ciclo de vida de un pedido en 
+PoliRestaurante, desde que el mesero lo toma hasta que se entrega al cliente, con visibilidad 
+diferenciada según el rol del usuario. 
+3. Roles del sistema 
+Rol 
+Descripción 
+Acciones principales 
+Mesero 
+Toma los pedidos 
+en las mesas 
+Crear pedido, agregar/quitar productos, asignar mesa, 
+marcar como entregado 
+Cocina 
+Prepara los 
+pedidos 
+Ver cola de pedidos pendientes, cambiar estado a "en 
+preparación" y "listo" 
+Administrador Gestiona el 
+restaurante 
+Gestionar menú (productos, precios, categorías), 
+gestionar mesas, gestionar usuarios, ver reportes de 
+ventas y tiempos de preparación 
+4. Flujo de estados del pedido 
+PENDIENTE → EN PREPARACIÓN → LISTO → ENTREGADO 
+                                          | 
+                                       (CANCELADO puede ocurrir desde PENDIENTE o EN PREPARACIÓN) 
+• 
+Pendiente: el mesero acaba de crear el pedido; aún no lo ha visto cocina. 
+• 
+En preparación: cocina tomó el pedido y lo está preparando. 
+--- Page 2 ---
+• 
+Listo: cocina terminó de preparar el pedido; está esperando a que el mesero lo 
+recoja. 
+• 
+Entregado: el mesero llevó el pedido a la mesa o al cliente. 
+• 
+Cancelado: el pedido se anula (ej. el cliente se retira, error en la toma del pedido). 
+Solo es posible cancelar si el pedido no ha sido entregado. 
+Cada cambio de estado debe quedar registrado con marca de tiempo, para poder calcular 
+después cuánto se demora un pedido en cada etapa. 
+5. Entidades principales sugeridas 
+• 
+Usuario (id, nombre, rol, credenciales) 
+• 
+Mesa (id, número, estado: libre/ocupada) 
+• 
+Categoría (id, nombre) — ej. Entradas, Platos fuertes, Bebidas, Postres 
+• 
+Producto (id, nombre, descripción, precio, categoría, disponibilidad) 
+• 
+Pedido (id, mesa, mesero, estado, fecha_creación, fecha_última_actualización) 
+• 
+DetallePedido (id, pedido, producto, cantidad, notas — ej. "sin cebolla") 
+• 
+HistorialEstado (id, pedido, estado, fecha, usuario_que_cambió) 
+8. Entregables por fase 
+Fase 1 — Análisis 
+• 
+Documento de requerimientos funcionales y no funcionales 
+• 
+Historias de usuario con criterios de aceptación (mínimo 8, cubriendo los 3 roles) 
+• 
+Diagrama relacional, de clases de arquitectura, de componentes y de 
+despliegue(formalizado en notación UML) 
+Fase 2 — Construcción Backend 
+• 
+Repositorio Git con historial de commits por integrante 
+• 
+Implementación funcional de los 3 módulos en backend (mesero, cocina, 
+administración) 
+Fase 2 — Construcción Frontend 
+• 
+Repositorio Git con historial de commits por integrante 
+• 
+Implementación funcional de los 3 módulos en Frontend (mesero, cocina, 
+administración) 
+ 
+9. Restricciones de equipo 
+--- Page 3 ---
+• 
+Equipos de 3 estudiantes. 
+• 
+Todos los integrantes deben tener participación visible en el repositorio (commits). 
+10. Criterios de evaluación  
+Cada estudiante debe sustentar la sesión siguiente a la explicación teórica su avance en el 
+proyecto o la actividad que se haya indicado. 
+Si no se entrega la clase siguiente, se puede entregar 15 días después de la explicación, pero 
+con penalización del 40% 
+Las excusas se deben presentar la clase inmediatamente después de sucedido un incidente! 

@@ -1,0 +1,112 @@
+PROYECTO – DESARROLLO WEB
+JUAN CAMILO UCHAMOCHA JAIME
+CARLOS EDUARDO MEDINA DÍAZ
+THOMAS SANTIAGO CABALLERO GIRALDO
+PROFESOR: YAMID EUGENIO RAMÍREZ SÁNCHEZ
+POLITÉCNICO GRANCOLOMBIANO
+2026
+Requerimientos
+Requerimientos funcionales
+El sistema debe permitir a los usuarios iniciar sesión con sus credenciales.
+El sistema debe permitir al mesero consultar el estado de las mesas (Libre/Ocupada).
+El sistema debe permitir al mesero crear un pedido, asociarlo a una mesa y registrar un timestamp automáticamente.
+El sistema debe asignarle a cada pedido nuevo el estado PENDIENTE.
+El sistema debe permitirle al mesero agregar productos a un pedido, incluyendo cantidad y notas adicionales.
+El sistema deberá permitir al mesero eliminar productos de un pedido mientras este se encuentre en estado PENDIENTE.
+El sistema debe mostrar a la cocina los pedidos en estado PENDIENTE según su orden de creación.
+El sistema debe permitirle a la cocina tomar un pedido pendiente, lo que cambia su estado de PENDIENTE a EN PREPARACIÓN.
+El sistema deberá permitir a cocina cambiar el estado de un pedido de EN PREPARACIÓN a LISTO cuando haya terminado su preparación.
+El sistema debe permitir al mesero visualizar los pedidos con estado LISTO y cambiar su estado a ENTREGADO cuando lo entreguen.
+El sistema deberá permitir cancelar un pedido únicamente cuando se encuentre en estado PENDIENTE o EN PREPARACIÓN.
+Al cancelar un pedido, el sistema deberá cambiar su estado a CANCELADO.
+El sistema solo permitirá cambiar el estado de un pedido a CANCELADO únicamente si este está en estado PENDIENTE o EN PREPARACIÓN.
+El sistema deberá registrar pedido, estado, fecha y hora del cambio y usuario responsable cada vez que el estado de un pedido cambie.
+El sistema deberá permitir al administrador crear, modificar y desactivar productos.
+El sistema deberá permitir al administrador registrar y actualizar el precio, descripción, categoría y disponibilidad de cada producto.
+El sistema deberá permitir consultar el historial de estados de cada pedido.
+El sistema deberá utilizar el historial de estados para calcular el tiempo que permanece un pedido en cada etapa.
+El sistema deberá actualizar automáticamente la fecha de última actualización del pedido cada vez que este sea modificado.
+Requerimientos no funcionales
+El sistema debe gestionar y limitar el acceso del usuario de acuerdo a sus roles (Mesero, Cocina, Administrador).
+El sistema deberá enviar un mensaje otp a los usuarios cada vez que inicien sesión con sus credenciales para mantener la seguridad de las cuentas.
+El historial de estados deberá conservarse de manera íntegra y no deberá modificarse como consecuencia de una actualización posterior del pedido.
+El sistema deberá registrar la fecha y hora de las operaciones utilizando solamente FECHA/HORA:MINUTO:SEGUNDO
+Los cambios de estado realizados por cocina deberán ser visibles para los meseros sin necesidad de duplicar manualmente la información.
+El sistema deberá soportar múltiples usuarios conectados simultáneamente.
+La interfaz deberá ser sencilla e intuitiva para permitir que meseros y personal de cocina puedan operar el sistema con una capacitación mínima.
+El sistema deberá utilizar mensajes claros para informar al usuario cuando una operación no pueda realizarse.
+El sistema deberá validar los datos introducidos antes de almacenarlos en la base de datos.
+El sistema deberá evitar que se registren productos con cantidades inválidas, precios negativos o información obligatoria vacía.
+El sistema deberá permitir realizar mantenimiento y actualizaciones sin afectar innecesariamente la información almacenada.
+El sistema deberá estar diseñado de forma modular para facilitar la incorporación futura de nuevas funcionalidades.
+La interfaz deberá adaptarse a los dispositivos utilizados en el restaurante, como computadores, tablets o terminales de cocina.
+Diagramas
+Diagrama relacional 
+Diagrama de clases 
+Diagrama de navegación
+Historias de usuario
+Módulo Mesero
+HU-01: Creación y registro de pedidos
+Como Mesero 
+Quiero crear un nuevo pedido asignándolo a una mesa y seleccionando los productos con sus respectivas cantidades 
+Para digitalizar la comanda del cliente y enviarla directamente a la cocina. 
+Criterios de Aceptación:
+El sistema debe permitir seleccionar una mesa en estado "Libre" y cambiar automáticamente su estado a "Ocupada" al asociarle el pedido. 
+Debe permitir agregar/quitar productos del menú disponible. 
+El pedido recién creado debe guardarse automáticamente en estado PENDIENTE. 
+Debe quedar registrado en el historial la fecha/hora de creación y el ID del mesero. 
+HU-02: Personalización de productos (Detalle del pedido)
+Como Mesero 
+Quiero agregar notas adicionales a un producto dentro de un pedido (ej. "sin cebolla", "salsa aparte") 
+Para comunicar adecuadamente las preferencias o restricciones alimenticias del cliente a la cocina. 
+Criterios de Aceptación:
+Cada ítem o producto agregado a la comanda debe tener un campo de texto opcional para especificaciones/notas. 
+Estas notas deben ser visibles claramente en el detalle del pedido para el rol de Cocina. 
+HU-03: Marcación de pedido entregado
+Como Mesero 
+Quiero cambiar el estado de un pedido de LISTO a ENTREGADO
+Para confirmar que el plato ha llegado a la mesa del cliente y dar por finalizado el servicio del pedido. 
+Criterios de Aceptación:
+El mesero solo puede marcar como ENTREGADO aquellos pedidos que estén en estado LISTO. 
+El cambio de estado debe guardar una marca de tiempo y el usuario que realizó la acción. 
+Una vez entregado, la mesa asociada puede liberarse si el pedido ha sido pagado/cerrado. 
+Módulo Cocina
+HU-04: Visualización de la cola de pedidos pendientes
+Como Cocinero / Personal de Cocina 
+Quiero ver una pantalla en tiempo real con la cola de pedidos en estado PENDIENTE y EN PREPARACIÓN
+Para organizar el flujo de trabajo en cocina según la prioridad de llegada y las especificaciones de cada comanda. 
+Criterios de Aceptación:
+La vista debe mostrar los pedidos ordenados cronológicamente por hora de creación (del más antiguo al más reciente). 
+Cada tarjeta de pedido debe mostrar: número de mesa, productos, cantidades, notas especiales y tiempo transcurrido desde que se tomó. 
+HU-05: Gestión de estados de preparación
+Como Cocinero / Personal de Cocina 
+Quiero actualizar el estado de un pedido a EN PREPARACIÓN cuando empiece a elaborarlo, y a LISTO cuando termine 
+Para notificar al mesero el avance de los platos y indicarle cuándo debe recogerlos. 
+Criterios de Aceptación:
+Al presionar "Iniciar preparación", el estado cambia de PENDIENTE a EN PREPARACIÓN. 
+Al presionar "Finalizar", el estado cambia de EN PREPARACIÓN a LISTO. 
+Cada cambio guarda automáticamente en la base de datos la marca de tiempo correspondiente (HistorialEstado). 
+Módulo Administración
+HU-06: Gestión del Menú y Productos (CRUD)
+Como Administrador 
+Quiero crear, editar, eliminar y cambiar la disponibilidad de productos en el menú 
+Para mantener actualizada la carta del restaurante con sus precios y categorías vigentes. 
+Criterios de Aceptación:
+Permite registrar campos clave: Nombre, Descripción, Precio, Categoría (Entradas, Platos fuertes, Bebidas, Postres) y Disponibilidad. 
+Si un producto se marca como "No disponible", el mesero no debe poder seleccionarlo en nuevos pedidos. 
+HU-07: Cancelación excepcional de pedidos
+Como Administrador (o Mesero si se autoriza) 
+Quiero cambiar el estado de un pedido a CANCELADO antes de que sea entregado 
+Para anular comandas tomadas por error o en caso de que el cliente se retire del establecimiento. 
+Criterios de Aceptación:
+Un pedido solo puede cancelarse si está en estado PENDIENTE o EN PREPARACIÓN. 
+No se puede cancelar un pedido que ya fue marcado como ENTREGADO. 
+Al cancelar, el sistema exige ingresar o seleccionar un motivo de anulación y guarda la marca de tiempo y el usuario autorizante. 
+HU-08: Reportes de ventas y métricas de tiempos de preparación
+Como Administrador 
+Quiero consultar reportes con las ventas globales y los tiempos promedio de preparación por estado 
+Para evaluar el rendimiento operativo de la cocina y el volumen de ingresos del restaurante. 
+Criterios de Aceptación:
+Debe permitir filtrar la información por rangos de fechas. 
+Debe calcular y mostrar el tiempo promedio que le toma a un pedido pasar de PENDIENTE a LISTO haciendo uso de la tabla HistorialEstado. 
+Debe mostrar métricas de ventas totales (monto acumulado y número de pedidos procesados).

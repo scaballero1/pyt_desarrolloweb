@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Diagrama de Clases — PoliRestaurante</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #0f1117;
+      color: #e8eaf0;
+      min-height: 100vh;
+      overflow-x: auto;
+    }
+
+    /* ── HEADER ── */
+    header {
+      background: linear-gradient(135deg, #1a1d2e 0%, #12151f 100%);
+      border-bottom: 1px solid #2a2d3e;
+      padding: 20px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    header h1 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #7c6fe0, #5ba3f5, #4ecdc4);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    header p { font-size: 0.78rem; color: #6b7280; margin-top: 2px; }
+
+    .legend {
+      display: flex; gap: 20px; flex-wrap: wrap; align-items: center;
+    }
+    .legend-item {
+      display: flex; align-items: center; gap: 7px; font-size: 0.72rem; color: #9ca3af;
+    }
+    .legend-dot {
+      width: 12px; height: 12px; border-radius: 3px;
+    }
+
+    .canvas-wrapper {
+      padding: 40px;
+      overflow: auto;
+    }
+    .canvas {
+      position: relative;
+      min-width: 2050px;
+      min-height: 1750px;
+    }
+
+    /* ── UML CLASS BOX ── */
+    .uml-class {
+      position: absolute;
+      background: #16192b;
+      border-radius: 10px;
+      border: 1.5px solid #2a2d3e;
+      min-width: 200px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.4);
+      transition: transform 0.2s, box-shadow 0.2s;
+      overflow: hidden;
+    }
+    .uml-class:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+      z-index: 10;
+    }
+
+    .uml-class.entity   .class-header { background: linear-gradient(135deg, #3d3177, #2e2560); border-bottom: 1px solid #4a3d9e; }
+    .uml-class.dao      .class-header { background: linear-gradient(135deg, #1e3a5f, #162c4a); border-bottom: 1px solid #2a5080; }
+    .uml-class.manager  .class-header { background: linear-gradient(135deg, #1a4044, #132e31); border-bottom: 1px solid #235c62; }
+    .uml-class.ui       .class-header { background: linear-gradient(135deg, #4a3600, #3a2b00); border-bottom: 1px solid #6b5000; }
+    .uml-class.enum     .class-header { background: linear-gradient(135deg, #3a1f00, #2c1700); border-bottom: 1px solid #6b3d00; }
+
+    .class-header {
+      padding: 8px 12px;
+      display: flex; flex-direction: column; align-items: center;
+    }
+    .class-stereotype {
+      font-size: 0.58rem; color: #a0a8c0; margin-bottom: 2px;
+    }
+    .class-name {
+      font-weight: 700; font-size: 0.78rem;
+      color: #fff; text-align: center;
+    }
+
+    .class-section {
+      padding: 6px 10px;
+      border-top: 1px solid #22253a;
+    }
+
+    .attr-row, .method-row {
+      display: flex; align-items: flex-start;
+      gap: 5px; padding: 1.5px 0; line-height: 1.5;
+    }
+    .visibility { color: #6b7280; min-width: 10px; text-align: center; font-size: 0.65rem; }
+    .attr-type { color: #5ba3f5; }
+    .attr-name { color: #e8eaf0; }
+    .attr-pk   { color: #ffd700; font-weight: 700; }
+    .attr-fk   { color: #ffb74d; }
+    .method-name { color: #4ecdc4; }
+    .method-return { color: #5ba3f5; }
+    .method-params { color: #9ca3af; }
+    .enum-val  { color: #ff8c69; padding: 1px 0; }
+    .divider-label {
+      font-size: 0.58rem; color: #4b5563; margin-bottom: 2px;
+      text-transform: uppercase; letter-spacing: 0.06em;
+    }
+
+    #connectors-svg {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      overflow: visible;
+    }
+    .arrow-assoc { stroke: #3d4460; stroke-width: 1.5; fill: none; }
+    .arrow-dep   { stroke: #3d4460; stroke-width: 1.5; fill: none; stroke-dasharray: 5,3; }
+    .arrow-use   { stroke: #2e5c62; stroke-width: 1.5; fill: none; stroke-dasharray: 5,3; }
+    .label-svg   { font-size: 9px; fill: #6b7280; font-family: 'Inter', sans-serif; }
+
+    .section-label {
+      position: absolute;
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      border-radius: 6px;
+    }
+    .sl-entity  { color: #7c6fe0; background: rgba(124,111,224,0.12); }
+    .sl-dao     { color: #5ba3f5; background: rgba(91,163,245,0.12); }
+    .sl-manager { color: #4ecdc4; background: rgba(78,205,196,0.12); }
+    .sl-ui      { color: #ffb74d; background: rgba(255,183,77,0.12); }
+    .sl-enum    { color: #ff8c69; background: rgba(255,140,105,0.12); }
+
+    .btn-print {
+      background: linear-gradient(135deg, #7c6fe0, #5ba3f5);
+      color: #fff; border: none; border-radius: 8px;
+      padding: 8px 18px; font-size: 0.78rem; font-weight: 600;
+      cursor: pointer; transition: opacity 0.2s;
+    }
+    .btn-print:hover { opacity: 0.85; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>Diagrama de Clases — PoliRestaurante</h1>
+    <p>Arquitectura en Capas: Entities · DAO · Manager · Interfaz de Usuario &nbsp;|&nbsp; Yamid Ramirez, MSc.</p>
+  </div>
+  <div style="display:flex;gap:24px;align-items:center">
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot" style="background:#7c6fe0"></div>Entity</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#5ba3f5"></div>DAO</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#4ecdc4"></div>Manager</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#ffb74d"></div>UI/Vista</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#ff8c69"></div>Enum</div>
+    </div>
+    <button class="btn-print" onclick="window.print()">Imprimir / PDF</button>
+  </div>
+</header>
+
+<div class="canvas-wrapper">
+<div class="canvas" id="canvas">
+
+  <svg id="connectors-svg" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <marker id="arr-open" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+        <polyline points="0,0 9,3.5 0,7" fill="none" stroke="#3d4460" stroke-width="1.2"/>
+      </marker>
+      <marker id="arr-use" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+        <polyline points="0,0 9,3.5 0,7" fill="none" stroke="#2e5c62" stroke-width="1.2"/>
+      </marker>
+    </defs>
+  </svg>
+
+  <!-- LABELS -->
+  <div class="section-label sl-enum"    style="left:30px; top:28px;">«Enumeraciones»</div>
+  <div class="section-label sl-entity"  style="left:30px; top:235px;">«Capa 1 — Entities»</div>
+  <div class="section-label sl-dao"     style="left:30px; top:685px;">«Capa 2 — DAO»</div>
+  <div class="section-label sl-manager" style="left:30px; top:1135px;">«Capa 3 — Manager»</div>
+  <div class="section-label sl-ui"      style="left:30px; top:1510px;">«Capa 4 — Interfaz de Usuario»</div>
+
+  <!-- ═══ ENUMS ═══ -->
+
+  <div class="uml-class enum" id="EstadoPedido" style="left:30px; top:58px; min-width:175px">
+    <div class="class-header">
+      <span class="class-stereotype">«enumeration»</span>
+      <span class="class-name">EstadoPedido</span>
+    </div>
+    <div class="class-section">
+      <div class="enum-val">PENDIENTE</div>
+      <div class="enum-val">EN_PREPARACION</div>
+      <div class="enum-val">LISTO</div>
+      <div class="enum-val">ENTREGADO</div>
+      <div class="enum-val">CANCELADO</div>
+    </div>
+  </div>
+
+  <div class="uml-class enum" id="EstadoMesa" style="left:230px; top:58px; min-width:155px">
+    <div class="class-header">
+      <span class="class-stereotype">«enumeration»</span>
+      <span class="class-name">EstadoMesa</span>
+    </div>
+    <div class="class-section">
+      <div class="enum-val">LIBRE</div>
+      <div class="enum-val">OCUPADA</div>
+    </div>
+  </div>
+
+  <div class="uml-class enum" id="RolEnum" style="left:408px; top:58px; min-width:155px">
+    <div class="class-header">
+      <span class="class-stereotype">«enumeration»</span>
+      <span class="class-name">Rol</span>
+    </div>
+    <div class="class-section">
+      <div class="enum-val">MESERO</div>
+      <div class="enum-val">COCINA</div>
+      <div class="enum-val">ADMINISTRADOR</div>
+    </div>
+  </div>
+
+  <!-- ═══ ENTITIES ═══ -->
+
+  <!-- Usuario -->
+  <div class="uml-class entity" id="Usuario" style="left:30px; top:265px; min-width:220px">
+    <div class="class-header">
+      <span class="class-stereotype">«entity»</span>
+      <span class="class-name">Usuario</span>
+    </div>
+    <div class="class-section">
+      <div class="divider-label">— atributos —</div>
+      <div class="attr-row"><span class="visibility">-</span><span class="attr-pk">id : Integer {PK}</span></div>
+      <div class="attr-row"><span class="visibility">-</span><span class="attr-fk">rol : Rol {FK}</span></div>
+      <div class="attr-row"><span class="visibility">-</span><span class="attr-name">nombre : </span><span class="attr-type">String</span></div>
+      <div class="attr-row"><span class="visibility">-</span><span class="attr-name">correo : </span><span class="attr-type">String</span></div>
+      <div class="attr-row"><span class="visibility">-</span><span class="attr-name">password : </span><span class="attr-type">String</span></div>
+      <div class="attr-row"><span class="visibility">-</span><span class="attr-name">otpCode : </span><span class="attr-type">String</span></div>
+    </div>
+    <div class="class-section">
+      <div class="divider-label">— métodos —</div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">getId() : </span><span class="method-return">Integer</span></div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">getNombre() : </span><span class="method-return">String</span></div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">getCorreo() : </span><span class="method-return">String</span></div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">getRol() : </span><span class="method-return">Rol</span></div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">setOtpCode(<span class="method-params">c:String</span>) : </span><span class="method-return">void</span></div>
+    </div>
+  </div>
+
+  <!-- Mesa -->
+  <div class="uml-class entity" id="Mesa" style="left:285px; top:265px; min-width:215px">
+    <div class="class-header">
+      <span class="class-stereotype">«entity»</span>
+      <span class="class-name">Mesa</span>
+    </div>
+    <div class="class-section">
+      <div class="divider-label">— atributos —</div>
+      <div class="attr-row"><span class="visibility">-</span><span class="attr-pk">id : Integer {PK}</span></div>
+      <div class="attr-row"><span class="visibility">-</span><span class="attr-name">numero : </span><span class="attr-type">Integer</span></div>
+      <div class="attr-row"><span class="visibility">-</span><span class="attr-fk">estado : EstadoMesa</span></div>
+    </div>
+    <div class="class-section">
+      <div class="divider-label">— métodos —</div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">getId() : </span><span class="method-return">Integer</span></div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">getNumero() : </span><span class="method-return">Integer</span></div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">getEstado() : </span><span class="method-return">EstadoMesa</span></div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">setEstado(<span class="method-params">e:EstadoMesa</span>) : </span><span class="method-return">void</span></div>
+    </div>
+  </div>
+
+  <!-- Categoria -->
+  <div class="uml-class entity" id="Categoria" style="left:535px; top:265px; min-width:205px">
+    <div class="class-header">
+      <span class="class-stereotype">«entity»</span>
+      <span class="class-name">Categoria</span>
+    </div>
+    <div class="class-section">
+      <div class="divider-label">— atributos —</div>
+      <div class="attr-row"><span class="visibility">-</span><span class="attr-pk">id : Integer {PK}</span></div>
+      <div class="attr-row"><span class="visibility">-</span><span class="attr-name">nombre : </span><span class="attr-type">String</span></div>
+    </div>
+    <div class="class-section">
+      <div class="divider-label">— métodos —</div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">getId() : </span><span class="method-return">Integer</span></div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">getNombre() : </span><span class="method-return">String</span></div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">setNombre(<span class="method-params">n:String</span>) : </span><span class="method-return">void</span></div>
+    </div>
+  </div>
+
+  <!-- Producto -->
+  <div class="uml-class entity" id="Producto" style="left:775px; top:265px; min-width:235px">
+    <div class="class-header">
+      <span class="class-stereotype">«entity»</span>
+      <span class="class-name">Producto</span>
+    </div>
+    <div class="class-section">
+      <div class="divider-label">— atributos —</div>
+      <div class="attr-row"><span class="visibility">-</span><span class="attr-pk">id : Integer {PK}</span></div>
+      <div class="attr-row"><span class="visibility">-</span><span class="attr-fk">categoriaId : Integer {FK}</span></div>
+      <div class="attr-row"><span class="visibility">-</span><span class="attr-name">nombre : </span><span class="attr-type">String</span></div>
+      <div class="attr-row"><span class="visibility">-</span><span class="attr-name">descripcion : </span><span class="attr-type">String</span></div>
+      <div class="attr-row"><span class="visibility">-</span><span class="attr-name">precio : </span><span class="attr-type">Decimal</span></div>
+      <div class="attr-row"><span class="visibility">-</span><span class="attr-name">disponible : </span><span class="attr-type">Boolean</span></div>
+    </div>
+    <div class="class-section">
+      <div class="divider-label">— métodos —</div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">getId() : </span><span class="method-return">Integer</span></div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">getPrecio() : </span><span class="method-return">Decimal</span></div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">isDisponible() : </span><span class="method-return">Boolean</span></div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">setDisponible(<span class="method-params">d:Boolean</span>) : </span><span class="method-return">void</span></div>
+    </div>
+  </div>
+
+  <!-- Pedido -->
+  <div class="uml-class entity" id="Pedido" style="left:1045px; top:265px; min-width:260px">
+    <div class="class-header">
+      <span class="class-stereotype">«entity»</span>
+      <span class="class-name">Pedido</span>
+    </div>
+    <div class="class-section">
+      <div class="divider-label">— atributos —</div>
+      <div class="attr-row"><span class="visibility">-</span><span class="attr-pk">id : Integer {PK}</span></div>
+      <div class="attr-row"><span class="visibility">-</span><span class="attr-fk">mesaId : Integer {FK, Nullable}</span></div>
+      <div class="attr-row"><span class="visibility">-</span><span class="attr-fk">meseroId : Integer {FK}</span></div>
+      <div class="attr-row"><span class="visibility">-</span><span class="attr-fk">estado : EstadoPedido</span></div>
+      <div class="attr-row"><span class="visibility">-</span><span class="attr-name">fechaCreacion : </span><span class="attr-type">DateTime</span></div>
+      <div class="attr-row"><span class="visibility">-</span><span class="attr-name">fechaUltimaActualizacion : </span><span class="attr-type">DateTime</span></div>
+    </div>
+    <div class="class-section">
+      <div class="divider-label">— métodos —</div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">getId() : </span><span class="method-return">Integer</span></div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">getEstado() : </span><span class="method-return">EstadoPedido</span></div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">setEstado(<span class="method-params">e:EstadoPedido</span>) : </span><span class="method-return">void</span></div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">actualizarTimestamp() : </span><span class="method-return">void</span></div>
+    </div>
+  </div>
+
+  <!-- DetallePedido -->
+  <div class="uml-class entity" id="DetallePedido" style="left:1340px; top:265px; min-width:245px">
+    <div class="class-header">
+      <span class="class-stereotype">«entity»</span>
+      <span class="class-name">DetallePedido</span>
+    </div>
+    <div class="class-section">
+      <div class="divider-label">— atributos —</div>
+      <div class="attr-row"><span class="visibility">-</span><span class="attr-pk">id : Integer {PK}</span></div>
+      <div class="attr-row"><span class="visibility">-</span><span class="attr-fk">pedidoId : Integer {FK}</span></div>
+      <div class="attr-row"><span class="visibility">-</span><span class="attr-fk">productoId : Integer {FK}</span></div>
+      <div class="attr-row"><span class="visibility">-</span><span class="attr-name">cantidad : </span><span class="attr-type">Integer</span></div>
+      <div class="attr-row"><span class="visibility">-</span><span class="attr-name">notas : </span><span class="attr-type">String {Nullable}</span></div>
+    </div>
+    <div class="class-section">
+      <div class="divider-label">— métodos —</div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">getId() : </span><span class="method-return">Integer</span></div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">getCantidad() : </span><span class="method-return">Integer</span></div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">getNotas() : </span><span class="method-return">String</span></div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">setCantidad(<span class="method-params">c:Integer</span>) : </span><span class="method-return">void</span></div>
+    </div>
+  </div>
+
+  <!-- HistorialEstado -->
+  <div class="uml-class entity" id="HistorialEstado" style="left:1620px; top:265px; min-width:245px">
+    <div class="class-header">
+      <span class="class-stereotype">«entity»</span>
+      <span class="class-name">HistorialEstado</span>
+    </div>
+    <div class="class-section">
+      <div class="divider-label">— atributos —</div>
+      <div class="attr-row"><span class="visibility">-</span><span class="attr-pk">id : Integer {PK}</span></div>
+      <div class="attr-row"><span class="visibility">-</span><span class="attr-fk">pedidoId : Integer {FK}</span></div>
+      <div class="attr-row"><span class="visibility">-</span><span class="attr-fk">usuarioId : Integer {FK}</span></div>
+      <div class="attr-row"><span class="visibility">-</span><span class="attr-fk">estado : EstadoPedido</span></div>
+      <div class="attr-row"><span class="visibility">-</span><span class="attr-name">fechaCambio : </span><span class="attr-type">DateTime</span></div>
+    </div>
+    <div class="class-section">
+      <div class="divider-label">— métodos —</div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">getId() : </span><span class="method-return">Integer</span></div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">getEstado() : </span><span class="method-return">EstadoPedido</span></div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">getFechaCambio() : </span><span class="method-return">DateTime</span></div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">getUsuarioId() : </span><span class="method-return">Integer</span></div>
+    </div>
+  </div>
+
+  <!-- ═══ DAO ═══ -->
+
+  <!-- UsuarioDAO -->
+  <div class="uml-class dao" id="UsuarioDAO" style="left:30px; top:715px; min-width:255px">
+    <div class="class-header">
+      <span class="class-stereotype">«DAO»</span>
+      <span class="class-name">UsuarioDAO</span>
+    </div>
+    <div class="class-section">
+      <div class="divider-label">— atributos —</div>
+      <div class="attr-row"><span class="visibility">-</span><span class="attr-name">conexion : </span><span class="attr-type">DBConnection</span></div>
+    </div>
+    <div class="class-section">
+      <div class="divider-label">— CRUD —</div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">crear(<span class="method-params">u:Usuario</span>) : </span><span class="method-return">void</span></div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">buscarPorId(<span class="method-params">id:Integer</span>) : </span><span class="method-return">Usuario</span></div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">buscarPorCorreo(<span class="method-params">correo:String</span>) : </span><span class="method-return">Usuario</span></div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">listar() : </span><span class="method-return">List&lt;Usuario&gt;</span></div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">actualizar(<span class="method-params">u:Usuario</span>) : </span><span class="method-return">void</span></div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">eliminar(<span class="method-params">id:Integer</span>) : </span><span class="method-return">void</span></div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">actualizarOtp(<span class="method-params">id:Integer, otp:String</span>) : </span><span class="method-return">void</span></div>
+    </div>
+  </div>
+
+  <!-- MesaDAO -->
+  <div class="uml-class dao" id="MesaDAO" style="left:318px; top:715px; min-width:245px">
+    <div class="class-header">
+      <span class="class-stereotype">«DAO»</span>
+      <span class="class-name">MesaDAO</span>
+    </div>
+    <div class="class-section">
+      <div class="divider-label">— atributos —</div>
+      <div class="attr-row"><span class="visibility">-</span><span class="attr-name">conexion : </span><span class="attr-type">DBConnection</span></div>
+    </div>
+    <div class="class-section">
+      <div class="divider-label">— CRUD —</div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">crear(<span class="method-params">m:Mesa</span>) : </span><span class="method-return">void</span></div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">buscarPorId(<span class="method-params">id:Integer</span>) : </span><span class="method-return">Mesa</span></div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">listar() : </span><span class="method-return">List&lt;Mesa&gt;</span></div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">listarLibres() : </span><span class="method-return">List&lt;Mesa&gt;</span></div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">actualizar(<span class="method-params">m:Mesa</span>) : </span><span class="method-return">void</span></div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">actualizarEstado(<span class="method-params">id:Integer, e:EstadoMesa</span>) : </span><span class="method-return">void</span></div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">eliminar(<span class="method-params">id:Integer</span>) : </span><span class="method-return">void</span></div>
+    </div>
+  </div>
+
+  <!-- CategoriaDAO -->
+  <div class="uml-class dao" id="CategoriaDAO" style="left:596px; top:715px; min-width:230px">
+    <div class="class-header">
+      <span class="class-stereotype">«DAO»</span>
+      <span class="class-name">CategoriaDAO</span>
+    </div>
+    <div class="class-section">
+      <div class="divider-label">— atributos —</div>
+      <div class="attr-row"><span class="visibility">-</span><span class="attr-name">conexion : </span><span class="attr-type">DBConnection</span></div>
+    </div>
+    <div class="class-section">
+      <div class="divider-label">— CRUD —</div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">crear(<span class="method-params">c:Categoria</span>) : </span><span class="method-return">void</span></div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">buscarPorId(<span class="method-params">id:Integer</span>) : </span><span class="method-return">Categoria</span></div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">listar() : </span><span class="method-return">List&lt;Categoria&gt;</span></div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">actualizar(<span class="method-params">c:Categoria</span>) : </span><span class="method-return">void</span></div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">eliminar(<span class="method-params">id:Integer</span>) : </span><span class="method-return">void</span></div>
+    </div>
+  </div>
+
+  <!-- ProductoDAO -->
+  <div class="uml-class dao" id="ProductoDAO" style="left:858px; top:715px; min-width:255px">
+    <div class="class-header">
+      <span class="class-stereotype">«DAO»</span>
+      <span class="class-name">ProductoDAO</span>
+    </div>
+    <div class="class-section">
+      <div class="divider-label">— atributos —</div>
+      <div class="attr-row"><span class="visibility">-</span><span class="attr-name">conexion : </span><span class="attr-type">DBConnection</span></div>
+    </div>
+    <div class="class-section">
+      <div class="divider-label">— CRUD —</div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">crear(<span class="method-params">p:Producto</span>) : </span><span class="method-return">void</span></div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">buscarPorId(<span class="method-params">id:Integer</span>) : </span><span class="method-return">Producto</span></div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">listar() : </span><span class="method-return">List&lt;Producto&gt;</span></div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">listarDisponibles() : </span><span class="method-return">List&lt;Producto&gt;</span></div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">listarPorCategoria(<span class="method-params">catId:Integer</span>) : </span><span class="method-return">List&lt;Producto&gt;</span></div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">actualizar(<span class="method-params">p:Producto</span>) : </span><span class="method-return">void</span></div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">desactivar(<span class="method-params">id:Integer</span>) : </span><span class="method-return">void</span></div>
+    </div>
+  </div>
+
+  <!-- PedidoDAO -->
+  <div class="uml-class dao" id="PedidoDAO" style="left:1145px; top:715px; min-width:270px">
+    <div class="class-header">
+      <span class="class-stereotype">«DAO»</span>
+      <span class="class-name">PedidoDAO</span>
+    </div>
+    <div class="class-section">
+      <div class="divider-label">— atributos —</div>
+      <div class="attr-row"><span class="visibility">-</span><span class="attr-name">conexion : </span><span class="attr-type">DBConnection</span></div>
+    </div>
+    <div class="class-section">
+      <div class="divider-label">— CRUD —</div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">crear(<span class="method-params">p:Pedido</span>) : </span><span class="method-return">Pedido</span></div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">buscarPorId(<span class="method-params">id:Integer</span>) : </span><span class="method-return">Pedido</span></div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">listar() : </span><span class="method-return">List&lt;Pedido&gt;</span></div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">listarPorEstado(<span class="method-params">e:EstadoPedido</span>) : </span><span class="method-return">List&lt;Pedido&gt;</span></div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">listarPorMesero(<span class="method-params">meseroId:Integer</span>) : </span><span class="method-return">List&lt;Pedido&gt;</span></div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">actualizarEstado(<span class="method-params">id:Integer, e:EstadoPedido</span>) : </span><span class="method-return">void</span></div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">actualizar(<span class="method-params">p:Pedido</span>) : </span><span class="method-return">void</span></div>
+    </div>
+  </div>
+
+  <!-- DetallePedidoDAO -->
+  <div class="uml-class dao" id="DetallePedidoDAO" style="left:1448px; top:715px; min-width:265px">
+    <div class="class-header">
+      <span class="class-stereotype">«DAO»</span>
+      <span class="class-name">DetallePedidoDAO</span>
+    </div>
+    <div class="class-section">
+      <div class="divider-label">— atributos —</div>
+      <div class="attr-row"><span class="visibility">-</span><span class="attr-name">conexion : </span><span class="attr-type">DBConnection</span></div>
+    </div>
+    <div class="class-section">
+      <div class="divider-label">— CRUD —</div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">agregar(<span class="method-params">d:DetallePedido</span>) : </span><span class="method-return">void</span></div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">buscarPorId(<span class="method-params">id:Integer</span>) : </span><span class="method-return">DetallePedido</span></div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">listarPorPedido(<span class="method-params">pedidoId:Integer</span>) : </span><span class="method-return">List&lt;DetallePedido&gt;</span></div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">actualizar(<span class="method-params">d:DetallePedido</span>) : </span><span class="method-return">void</span></div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">eliminar(<span class="method-params">id:Integer</span>) : </span><span class="method-return">void</span></div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">eliminarPorPedido(<span class="method-params">pedidoId:Integer</span>) : </span><span class="method-return">void</span></div>
+    </div>
+  </div>
+
+  <!-- HistorialEstadoDAO -->
+  <div class="uml-class dao" id="HistorialEstadoDAO" style="left:1747px; top:715px; min-width:260px">
+    <div class="class-header">
+      <span class="class-stereotype">«DAO»</span>
+      <span class="class-name">HistorialEstadoDAO</span>
+    </div>
+    <div class="class-section">
+      <div class="divider-label">— atributos —</div>
+      <div class="attr-row"><span class="visibility">-</span><span class="attr-name">conexion : </span><span class="attr-type">DBConnection</span></div>
+    </div>
+    <div class="class-section">
+      <div class="divider-label">— CRUD —</div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">registrar(<span class="method-params">h:HistorialEstado</span>) : </span><span class="method-return">void</span></div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">listarPorPedido(<span class="method-params">pedidoId:Integer</span>) : </span><span class="method-return">List&lt;HistorialEstado&gt;</span></div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">calcularTiempoPorEtapa(<span class="method-params">pedidoId:Integer</span>) : </span><span class="method-return">Map&lt;EstadoPedido,Long&gt;</span></div>
+    </div>
+  </div>
+
+  <!-- ═══ MANAGER ═══ -->
+
+  <!-- AuthManager -->
+  <div class="uml-class manager" id="AuthManager" style="left:30px; top:1165px; min-width:285px">
+    <div class="class-header">
+      <span class="class-stereotype">«manager»</span>
+      <span class="class-name">AuthManager</span>
+    </div>
+    <div class="class-section">
+      <div class="divider-label">— dependencias DAO —</div>
+      <div class="attr-row"><span class="visibility">-</span><span class="attr-fk">usuarioDAO : UsuarioDAO</span></div>
+    </div>
+    <div class="class-section">
+      <div class="divider-label">— casos de uso —</div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">iniciarSesion(<span class="method-params">correo:String, pwd:String</span>) : </span><span class="method-return">Usuario</span></div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">enviarOtp(<span class="method-params">usuarioId:Integer</span>) : </span><span class="method-return">void</span></div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">verificarOtp(<span class="method-params">usuarioId:Integer, otp:String</span>) : </span><span class="method-return">Boolean</span></div>
+      <div class="method-row"><span class="visibility">-</span><span class="method-name">generarOtp() : </span><span class="method-return">String</span></div>
+    </div>
+  </div>
+
+  <!-- MeseroManager -->
+  <div class="uml-class manager" id="MeseroManager" style="left:348px; top:1165px; min-width:320px">
+    <div class="class-header">
+      <span class="class-stereotype">«manager»</span>
+      <span class="class-name">MeseroManager</span>
+    </div>
+    <div class="class-section">
+      <div class="divider-label">— dependencias DAO —</div>
+      <div class="attr-row"><span class="visibility">-</span><span class="attr-fk">pedidoDAO : PedidoDAO</span></div>
+      <div class="attr-row"><span class="visibility">-</span><span class="attr-fk">detallePedidoDAO : DetallePedidoDAO</span></div>
+      <div class="attr-row"><span class="visibility">-</span><span class="attr-fk">mesaDAO : MesaDAO</span></div>
+      <div class="attr-row"><span class="visibility">-</span><span class="attr-fk">historialEstadoDAO : HistorialEstadoDAO</span></div>
+      <div class="attr-row"><span class="visibility">-</span><span class="attr-fk">productoDAO : ProductoDAO</span></div>
+    </div>
+    <div class="class-section">
+      <div class="divider-label">— casos de uso —</div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">consultarMesas() : </span><span class="method-return">List&lt;Mesa&gt;</span></div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">crearPedido(<span class="method-params">mesaId:Integer, meseroId:Integer</span>) : </span><span class="method-return">Pedido</span></div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">agregarProducto(<span class="method-params">pedidoId:Integer, productoId:Integer, cant:Integer, notas:String</span>) : </span><span class="method-return">void</span></div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">eliminarProducto(<span class="method-params">detalleId:Integer</span>) : </span><span class="method-return">void</span></div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">consultarPedidosListos() : </span><span class="method-return">List&lt;Pedido&gt;</span></div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">marcarEntregado(<span class="method-params">pedidoId:Integer, meseroId:Integer</span>) : </span><span class="method-return">void</span></div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">cancelarPedido(<span class="method-params">pedidoId:Integer, usuarioId:Integer</span>) : </span><span class="method-return">void</span></div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">consultarHistorial(<span class="method-params">pedidoId:Integer</span>) : </span><span class="method-return">List&lt;HistorialEstado&gt;</span></div>
+    </div>
+  </div>
+
+  <!-- CocinaManager -->
+  <div class="uml-class manager" id="CocinaManager" style="left:700px; top:1165px; min-width:310px">
+    <div class="class-header">
+      <span class="class-stereotype">«manager»</span>
+      <span class="class-name">CocinaManager</span>
+    </div>
+    <div class="class-section">
+      <div class="divider-label">— dependencias DAO —</div>
+      <div class="attr-row"><span class="visibility">-</span><span class="attr-fk">pedidoDAO : PedidoDAO</span></div>
+      <div class="attr-row"><span class="visibility">-</span><span class="attr-fk">detallePedidoDAO : DetallePedidoDAO</span></div>
+      <div class="attr-row"><span class="visibility">-</span><span class="attr-fk">historialEstadoDAO : HistorialEstadoDAO</span></div>
+    </div>
+    <div class="class-section">
+      <div class="divider-label">— casos de uso —</div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">verColaPendientes() : </span><span class="method-return">List&lt;Pedido&gt;</span></div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">tomarPedido(<span class="method-params">pedidoId:Integer, cocineroId:Integer</span>) : </span><span class="method-return">void</span></div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">marcarListo(<span class="method-params">pedidoId:Integer, cocineroId:Integer</span>) : </span><span class="method-return">void</span></div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">cancelarPedido(<span class="method-params">pedidoId:Integer, usuarioId:Integer</span>) : </span><span class="method-return">void</span></div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">verDetallesPedido(<span class="method-params">pedidoId:Integer</span>) : </span><span class="method-return">List&lt;DetallePedido&gt;</span></div>
+    </div>
+  </div>
+
+  <!-- AdminManager -->
+  <div class="uml-class manager" id="AdminManager" style="left:1040px; top:1165px; min-width:320px">
+    <div class="class-header">
+      <span class="class-stereotype">«manager»</span>
+      <span class="class-name">AdminManager</span>
+    </div>
+    <div class="class-section">
+      <div class="divider-label">— dependencias DAO —</div>
+      <div class="attr-row"><span class="visibility">-</span><span class="attr-fk">productoDAO : ProductoDAO</span></div>
+      <div class="attr-row"><span class="visibility">-</span><span class="attr-fk">categoriaDAO : CategoriaDAO</span></div>
+      <div class="attr-row"><span class="visibility">-</span><span class="attr-fk">mesaDAO : MesaDAO</span></div>
+      <div class="attr-row"><span class="visibility">-</span><span class="attr-fk">usuarioDAO : UsuarioDAO</span></div>
+      <div class="attr-row"><span class="visibility">-</span><span class="attr-fk">pedidoDAO : PedidoDAO</span></div>
+      <div class="attr-row"><span class="visibility">-</span><span class="attr-fk">historialEstadoDAO : HistorialEstadoDAO</span></div>
+    </div>
+    <div class="class-section">
+      <div class="divider-label">— casos de uso —</div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">crearProducto(<span class="method-params">p:Producto</span>) : </span><span class="method-return">void</span></div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">modificarProducto(<span class="method-params">p:Producto</span>) : </span><span class="method-return">void</span></div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">desactivarProducto(<span class="method-params">id:Integer</span>) : </span><span class="method-return">void</span></div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">crearMesa(<span class="method-params">m:Mesa</span>) : </span><span class="method-return">void</span></div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">gestionarUsuarios() : </span><span class="method-return">List&lt;Usuario&gt;</span></div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">verReporteVentas() : </span><span class="method-return">Map&lt;String,Object&gt;</span></div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">calcularTiempoPreparacion(<span class="method-params">pedidoId:Integer</span>) : </span><span class="method-return">Long</span></div>
+    </div>
+  </div>
+
+  <!-- ═══ UI / VISTAS ═══ -->
+
+  <!-- LoginView -->
+  <div class="uml-class ui" id="LoginView" style="left:30px; top:1540px; min-width:235px">
+    <div class="class-header">
+      <span class="class-stereotype">«UI / Vista»</span>
+      <span class="class-name">LoginView</span>
+    </div>
+    <div class="class-section">
+      <div class="divider-label">— dependencias —</div>
+      <div class="attr-row"><span class="visibility">-</span><span class="attr-fk">authManager : AuthManager</span></div>
+    </div>
+    <div class="class-section">
+      <div class="divider-label">— acciones UI —</div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">mostrarFormLogin() : </span><span class="method-return">void</span></div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">onSubmitCredenciales() : </span><span class="method-return">void</span></div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">mostrarFormOtp() : </span><span class="method-return">void</span></div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">onSubmitOtp() : </span><span class="method-return">void</span></div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">mostrarError(<span class="method-params">msg:String</span>) : </span><span class="method-return">void</span></div>
+    </div>
+  </div>
+
+  <!-- MeseroView -->
+  <div class="uml-class ui" id="MeseroView" style="left:298px; top:1540px; min-width:268px">
+    <div class="class-header">
+      <span class="class-stereotype">«UI / Vista»</span>
+      <span class="class-name">MeseroView</span>
+    </div>
+    <div class="class-section">
+      <div class="divider-label">— dependencias —</div>
+      <div class="attr-row"><span class="visibility">-</span><span class="attr-fk">meseroManager : MeseroManager</span></div>
+    </div>
+    <div class="class-section">
+      <div class="divider-label">— acciones UI —</div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">mostrarMesas() : </span><span class="method-return">void</span></div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">onCrearPedido(<span class="method-params">mesaId:Integer</span>) : </span><span class="method-return">void</span></div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">mostrarMenuProductos() : </span><span class="method-return">void</span></div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">onAgregarProducto(<span class="method-params">pId:Integer, cant:Integer, notas:String</span>) : </span><span class="method-return">void</span></div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">onEliminarProducto(<span class="method-params">detalleId:Integer</span>) : </span><span class="method-return">void</span></div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">mostrarPedidosListos() : </span><span class="method-return">void</span></div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">onMarcarEntregado(<span class="method-params">pedidoId:Integer</span>) : </span><span class="method-return">void</span></div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">onCancelarPedido(<span class="method-params">pedidoId:Integer</span>) : </span><span class="method-return">void</span></div>
+    </div>
+  </div>
+
+  <!-- CocinaView -->
+  <div class="uml-class ui" id="CocinaView" style="left:600px; top:1540px; min-width:265px">
+    <div class="class-header">
+      <span class="class-stereotype">«UI / Vista»</span>
+      <span class="class-name">CocinaView</span>
+    </div>
+    <div class="class-section">
+      <div class="divider-label">— dependencias —</div>
+      <div class="attr-row"><span class="visibility">-</span><span class="attr-fk">cocinaManager : CocinaManager</span></div>
+    </div>
+    <div class="class-section">
+      <div class="divider-label">— acciones UI —</div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">mostrarColaPendientes() : </span><span class="method-return">void</span></div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">onTomarPedido(<span class="method-params">pedidoId:Integer</span>) : </span><span class="method-return">void</span></div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">onMarcarListo(<span class="method-params">pedidoId:Integer</span>) : </span><span class="method-return">void</span></div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">mostrarDetallesPedido(<span class="method-params">pedidoId:Integer</span>) : </span><span class="method-return">void</span></div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">onCancelarPedido(<span class="method-params">pedidoId:Integer</span>) : </span><span class="method-return">void</span></div>
+    </div>
+  </div>
+
+  <!-- AdminView -->
+  <div class="uml-class ui" id="AdminView" style="left:900px; top:1540px; min-width:290px">
+    <div class="class-header">
+      <span class="class-stereotype">«UI / Vista»</span>
+      <span class="class-name">AdminView</span>
+    </div>
+    <div class="class-section">
+      <div class="divider-label">— dependencias —</div>
+      <div class="attr-row"><span class="visibility">-</span><span class="attr-fk">adminManager : AdminManager</span></div>
+    </div>
+    <div class="class-section">
+      <div class="divider-label">— acciones UI —</div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">mostrarPanelProductos() : </span><span class="method-return">void</span></div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">onCrearProducto() : </span><span class="method-return">void</span></div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">onModificarProducto(<span class="method-params">id:Integer</span>) : </span><span class="method-return">void</span></div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">onDesactivarProducto(<span class="method-params">id:Integer</span>) : </span><span class="method-return">void</span></div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">mostrarPanelMesas() : </span><span class="method-return">void</span></div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">mostrarPanelUsuarios() : </span><span class="method-return">void</span></div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">mostrarReporteVentas() : </span><span class="method-return">void</span></div>
+      <div class="method-row"><span class="visibility">+</span><span class="method-name">mostrarTiemposPreparacion() : </span><span class="method-return">void</span></div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<script>
+const canvas = document.getElementById('canvas');
+const svg    = document.getElementById('connectors-svg');
+
+function getBox(id) {
+  const el = document.getElementById(id);
+  if (!el) return null;
+  return {
+    left: el.offsetLeft, top: el.offsetTop,
+    width: el.offsetWidth, height: el.offsetHeight,
+    cx: el.offsetLeft + el.offsetWidth/2,
+    cy: el.offsetTop  + el.offsetHeight/2,
+    right:  el.offsetLeft + el.offsetWidth,
+    bottom: el.offsetTop  + el.offsetHeight,
+  };
+}
+
+function drawLine(x1,y1,x2,y2, cls, marker) {
+  const path = document.createElementNS('http://www.w3.org/2000/svg','path');
+  const mx = (x1+x2)/2;
+  path.setAttribute('d', `M${x1},${y1} C${mx},${y1} ${mx},${y2} ${x2},${y2}`);
+  path.setAttribute('class', cls);
+  if (marker) path.setAttribute('marker-end', `url(#${marker})`);
+  svg.appendChild(path);
+}
+
+function connect(fromId, toId, cls, marker, fromEdge, toEdge) {
+  const a = getBox(fromId), b = getBox(toId);
+  if (!a || !b) return;
+  let x1,y1,x2,y2;
+  if (fromEdge==='bottom') { x1=a.cx; y1=a.bottom; }
+  else if (fromEdge==='top') { x1=a.cx; y1=a.top; }
+  else if (fromEdge==='right') { x1=a.right; y1=a.cy; }
+  else { x1=a.left; y1=a.cy; }
+  if (toEdge==='top') { x2=b.cx; y2=b.top; }
+  else if (toEdge==='bottom') { x2=b.cx; y2=b.bottom; }
+  else if (toEdge==='left') { x2=b.left; y2=b.cy; }
+  else { x2=b.right; y2=b.cy; }
+  drawLine(x1,y1,x2,y2,cls,marker);
+}
+
+window.addEventListener('load', () => {
+  svg.setAttribute('width', canvas.scrollWidth);
+  svg.setAttribute('height', canvas.scrollHeight);
+
+  // Entity → DAO (dashed dependency arrows)
+  connect('Usuario',       'UsuarioDAO',        'arrow-dep','arr-open','bottom','top');
+  connect('Mesa',          'MesaDAO',           'arrow-dep','arr-open','bottom','top');
+  connect('Categoria',     'CategoriaDAO',      'arrow-dep','arr-open','bottom','top');
+  connect('Producto',      'ProductoDAO',       'arrow-dep','arr-open','bottom','top');
+  connect('Pedido',        'PedidoDAO',         'arrow-dep','arr-open','bottom','top');
+  connect('DetallePedido', 'DetallePedidoDAO',  'arrow-dep','arr-open','bottom','top');
+  connect('HistorialEstado','HistorialEstadoDAO','arrow-dep','arr-open','bottom','top');
+
+  // DAO → Manager (use arrows)
+  connect('UsuarioDAO',      'AuthManager',    'arrow-use','arr-use','bottom','top');
+  connect('PedidoDAO',       'MeseroManager',  'arrow-use','arr-use','bottom','top');
+  connect('MesaDAO',         'MeseroManager',  'arrow-use','arr-use','bottom','top');
+  connect('PedidoDAO',       'CocinaManager',  'arrow-use','arr-use','bottom','top');
+  connect('ProductoDAO',     'AdminManager',   'arrow-use','arr-use','bottom','top');
+  connect('CategoriaDAO',    'AdminManager',   'arrow-use','arr-use','bottom','top');
+  connect('MesaDAO',         'AdminManager',   'arrow-use','arr-use','bottom','top');
+  connect('HistorialEstadoDAO','AdminManager', 'arrow-use','arr-use','bottom','top');
+
+  // Manager → UI (association)
+  connect('AuthManager',  'LoginView',    'arrow-assoc','arr-open','bottom','top');
+  connect('MeseroManager','MeseroView',   'arrow-assoc','arr-open','bottom','top');
+  connect('CocinaManager','CocinaView',   'arrow-assoc','arr-open','bottom','top');
+  connect('AdminManager', 'AdminView',    'arrow-assoc','arr-open','bottom','top');
+});
+</script>
+</body>
+</html>

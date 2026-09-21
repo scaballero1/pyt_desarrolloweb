@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PoliRestaurante — Directorio y Gestión de Clientes (15 Clientes)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-main: #0c0e17;
+      --bg-card: #151928;
+      --bg-card-hover: #1c2237;
+      --border-subtle: #242b45;
+      --primary: #6366f1;
+      --primary-light: #818cf8;
+      --primary-glow: rgba(99, 102, 241, 0.25);
+      --accent: #10b981;
+      --accent-glow: rgba(16, 185, 129, 0.2);
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --text-main: #f3f4f6;
+      --text-muted: #9ca3af;
+      --text-dim: #6b7280;
+      --badge-bg: rgba(255, 255, 255, 0.06);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Top Navigation Bar */
+    header {
+      background: rgba(18, 22, 37, 0.95);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-subtle);
+      padding: 14px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .brand-logo {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 1.2rem;
+      color: white;
+      box-shadow: 0 4px 14px var(--primary-glow);
+    }
+
+    .brand-info h1 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: #ffffff;
+    }
+
+    .brand-info p {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .user-pill {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 0.85rem;
+    }
+
+    .user-avatar {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: #4f46e5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    /* Main Container */
+    main {
+      max-width: 1440px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 28px 32px 60px;
+      flex: 1;
+    }
+
+    /* Title & KPIs */
+    .page-header {
+      margin-bottom: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .page-title h2 {
+      font-size: 1.65rem;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 4px;
+    }
+
+    .page-title p {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    .kpi-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+      padding: 18px 22px;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+
+    .kpi-card:hover {
+      transform: translateY(-2px);
+      border-color: #3b4468;
+    }
+
+    .kpi-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      background: var(--primary);
+    }
+
+    .kpi-card.kpi-green::before { background: var(--accent); }
+    .kpi-card.kpi-amber::before { background: var(--warning); }
+    .kpi-card.kpi-blue::before { background: #06b6d4; }
+
+    .kpi-label {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .kpi-value {
+      font-size: 1.7rem;
+      font-weight: 800;
+      color: #ffffff;
+      line-height: 1.1;
+      margin-bottom: 4px;
+    }
+
+    .kpi-desc {
+      font-size: 0.8rem;
+      color: var(--text-dim);
+    }
+
+    /* Action bar */
+    .controls-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 12px 18px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .search-box {
+      display: flex;
+      align-items: center;
+      background: #0d101c;
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      padding: 8px 14px;
+      gap: 10px;
+      min-width: 320px;
+      flex: 1;
+      max-width: 480px;
+    }
+
+    .search-box input {
+      background: transparent;
+      border: none;
+      outline: none;
+      color: var(--text-main);
+      font-size: 0.88rem;
+      width: 100%;
+    }
+
+    .search-box input::placeholder {
+      color: var(--text-dim);
+    }
+
+    .filter-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .select-filter {
+      background: #0d101c;
+      border: 1px solid var(--border-subtle);
+      color: var(--text-main);
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      outline: none;
+      cursor: pointer;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 18px;
+      border-radius: 8px;
+      font-size: 0.86rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s ease;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+      box-shadow: 0 2px 10px var(--primary-glow);
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-light);
+    }
+
+    .btn-secondary {
+      background: var(--border-subtle);
+      color: var(--text-main);
+    }
+
+    .btn-secondary:hover {
+      background: #323b5c;
+    }
+
+    /* Data Table */
+    .table-container {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+
+    thead {
+      background: #101423;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    th {
+      padding: 14px 18px;
+      font-size: 0.76rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+    }
+
+    tbody tr {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      transition: background 0.15s;
+    }
+
+    tbody tr:hover {
+      background: var(--bg-card-hover);
+    }
+
+    td {
+      padding: 14px 18px;
+      font-size: 0.86rem;
+      vertical-align: middle;
+    }
+
+    .client-id {
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text-dim);
+      font-weight: 500;
+    }
+
+    .client-profile {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .avatar-circle {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #4f46e5, #9333ea);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.8rem;
+      color: white;
+      flex-shrink: 0;
+    }
+
+    .client-name {
+      font-weight: 600;
+      color: #ffffff;
+    }
+
+    .client-email {
+      font-size: 0.76rem;
+      color: var(--text-dim);
+    }
+
+    .phone-cell {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+      color: #d1d5db;
+    }
+
+    .address-cell {
+      max-width: 240px;
+      line-height: 1.35;
+    }
+
+    .address-main {
+      color: #e5e7eb;
+    }
+
+    .address-zone {
+      font-size: 0.76rem;
+      color: #38bdf8;
+      font-weight: 500;
+    }
+
+    /* Badges */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 0.74rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+    }
+
+    .badge-vip {
+      background: rgba(168, 85, 247, 0.18);
+      color: #c084fc;
+      border: 1px solid rgba(168, 85, 247, 0.4);
+    }
+
+    .badge-frecuente {
+      background: rgba(16, 185, 129, 0.18);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.4);
+    }
+
+    .badge-activo {
+      background: rgba(59, 130, 246, 0.18);
+      color: #60a5fa;
+      border: 1px solid rgba(59, 130, 246, 0.4);
+    }
+
+    .badge-nuevo {
+      background: rgba(245, 158, 11, 0.18);
+      color: #fbbf24;
+      border: 1px solid rgba(245, 158, 11, 0.4);
+    }
+
+    .money-cell {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 600;
+      color: #10b981;
+    }
+
+    .action-btn {
+      background: transparent;
+      border: 1px solid var(--border-subtle);
+      color: var(--text-main);
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 0.78rem;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .action-btn:hover {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: white;
+    }
+
+    /* Table Footer */
+    .table-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 20px;
+      border-top: 1px solid var(--border-subtle);
+      background: #101423;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+    }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(6px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+
+    .modal-content {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 16px;
+      width: 100%;
+      max-width: 520px;
+      padding: 24px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+
+    .modal-header h3 {
+      font-size: 1.15rem;
+      color: #ffffff;
+    }
+
+    .close-modal {
+      background: none;
+      border: none;
+      color: var(--text-dim);
+      font-size: 1.4rem;
+      cursor: pointer;
+    }
+
+    .modal-body p {
+      font-size: 0.9rem;
+      margin-bottom: 10px;
+      color: var(--text-muted);
+    }
+
+    .modal-body strong {
+      color: #ffffff;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="brand-group">
+      <div class="brand-logo">PR</div>
+      <div class="brand-info">
+        <h1>PoliRestaurante — Módulo Domicilios</h1>
+        <p>Sistema de Gestión de Pedidos &bull; Politécnico Grancolombiano 2026</p>
+      </div>
+    </div>
+    <div class="header-actions">
+      <div class="user-pill">
+        <div class="user-avatar">ADM</div>
+        <span>Administrador (Caja/Recepción)</span>
+      </div>
+      <button class="btn btn-secondary" onclick="window.print()">Imprimir / Exportar</button>
+    </div>
+  </header>
+
+  <main>
+    <div class="page-header">
+      <div class="page-title">
+        <h2>Directorio y Gestión de Clientes</h2>
+        <p>Listado oficial cargado en pantalla con 15 clientes totales para despachos a domicilio y seguimiento</p>
+      </div>
+      <div style="display:flex; gap:10px;">
+        <button class="btn btn-primary" onclick="alert('Funcionalidad para registrar nuevo cliente en el sistema')">+ Nuevo Cliente</button>
+      </div>
+    </div>
+
+    <!-- KPIs -->
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-label">Clientes Totales en Pantalla</div>
+        <div class="kpi-value" id="kpi-total">15</div>
+        <div class="kpi-desc">Registrados en la base de datos</div>
+      </div>
+      <div class="kpi-card kpi-green">
+        <div class="kpi-label">Pedidos a Domicilio Realizados</div>
+        <div class="kpi-value">125</div>
+        <div class="kpi-desc">Histórico acumulado en el sistema</div>
+      </div>
+      <div class="kpi-card kpi-amber">
+        <div class="kpi-label">Facturación Domicilios</div>
+        <div class="kpi-value">$3'918.500</div>
+        <div class="kpi-desc">Promedio $31.348 por comanda</div>
+      </div>
+      <div class="kpi-card kpi-blue">
+        <div class="kpi-label">Zonas Activas (Bogotá)</div>
+        <div class="kpi-value">6 Localidades</div>
+        <div class="kpi-desc">Chapinero, Usaquén, Suba, Teusaquillo...</div>
+      </div>
+    </div>
+
+    <!-- Controls -->
+    <div class="controls-bar">
+      <div class="search-box">
+        <svg width="18" height="18" fill="none" stroke="#6b7280" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8" stroke-width="2"></circle><path d="m21 21-4.35-4.35" stroke-width="2" stroke-linecap="round"></path></svg>
+        <input type="text" id="searchInput" placeholder="Buscar por nombre, teléfono, zona o dirección..." onkeyup="filterTable()">
+      </div>
+      <div class="filter-group">
+        <select class="select-filter" id="zoneFilter" onchange="filterTable()">
+          <option value="">Todas las zonas</option>
+          <option value="Chapinero">Chapinero</option>
+          <option value="Usaquén">Usaquén</option>
+          <option value="Teusaquillo">Teusaquillo</option>
+          <option value="Cedritos">Cedritos</option>
+          <option value="Suba">Suba</option>
+          <option value="Santa Bárbara">Santa Bárbara</option>
+        </select>
+        <select class="select-filter" id="statusFilter" onchange="filterTable()">
+          <option value="">Todos los estados</option>
+          <option value="VIP">VIP</option>
+          <option value="Frecuente">Frecuente</option>
+          <option value="Activo">Activo</option>
+          <option value="Nuevo">Nuevo</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Table with 15 Clients -->
+    <div class="table-container">
+      <table id="clientsTable">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Cliente</th>
+            <th>Teléfono</th>
+            <th>Dirección de Entrega</th>
+            <th>Zona / Barrio</th>
+            <th>Pedidos</th>
+            <th>Total Gastado</th>
+            <th>Estado</th>
+            <th>Acción</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody">
+          <!-- 1 -->
+          <tr>
+            <td class="client-id">#CLI-001</td>
+            <td>
+              <div class="client-profile">
+                <div class="avatar-circle">JP</div>
+                <div>
+                  <div class="client-name">Juan Camilo Pérez Morales</div>
+                  <div class="client-email">juan.perez@email.com</div>
+                </div>
+              </div>
+            </td>
+            <td class="phone-cell">310 458 9214</td>
+            <td class="address-cell"><span class="address-main">Calle 72 # 11-45, Apt 502</span></td>
+            <td><span class="address-zone">Chapinero</span></td>
+            <td><strong>12</strong></td>
+            <td class="money-cell">$348.000</td>
+            <td><span class="badge badge-frecuente">Frecuente</span></td>
+            <td><button class="action-btn" onclick="openDetail('Juan Camilo Pérez Morales', 'Calle 72 # 11-45, Apt 502', '310 458 9214', '12 pedidos', '$348.000', 'Hamburguesa Doble Carne + Papas Polirústicas')">Detalle</button></td>
+          </tr>
+          <!-- 2 -->
+          <tr>
+            <td class="client-id">#CLI-002</td>
+            <td>
+              <div class="client-profile">
+                <div class="avatar-circle" style="background: linear-gradient(135deg, #ec4899, #8b5cf6);">CG</div>
+                <div>
+                  <div class="client-name">Camila Andrea Gómez Rincón</div>
+                  <div class="client-email">camila.gomez@email.com</div>
+                </div>
+              </div>
+            </td>
+            <td class="phone-cell">320 895 1243</td>
+            <td class="address-cell"><span class="address-main">Cra. 15 # 104-30, Casa 4</span></td>
+            <td><span class="address-zone">Usaquén</span></td>
+            <td><strong>8</strong></td>
+            <td class="money-cell">$215.500</td>
+            <td><span class="badge badge-activo">Activo</span></td>
+            <td><button class="action-btn" onclick="openDetail('Camila Andrea Gómez Rincón', 'Cra. 15 # 104-30, Casa 4', '320 895 1243', '8 pedidos', '$215.500', 'Pizza Artesanal 4 Quesos + Gaseosa')">Detalle</button></td>
+          </tr>
+          <!-- 3 -->
+          <tr>
+            <td class="client-id">#CLI-003</td>
+            <td>
+              <div class="client-profile">
+                <div class="avatar-circle" style="background: linear-gradient(135deg, #10b981, #06b6d4);">AS</div>
+                <div>
+                  <div class="client-name">Andrés Felipe Silva Castro</div>
+                  <div class="client-email">andres.silva@email.com</div>
+                </div>
+              </div>
+            </td>
+            <td class="phone-cell">315 674 8920</td>
+            <td class="address-cell"><span class="address-main">Calle 53 # 24-18</span></td>
+            <td><span class="address-zone">Teusaquillo</span></td>
+            <td><strong>15</strong></td>
+            <td class="money-cell">$492.000</td>
+            <td><span class="badge badge-vip">VIP</span></td>
+            <td><button class="action-btn" onclick="openDetail('Andrés Felipe Silva Castro', 'Calle 53 # 24-18', '315 674 8920', '15 pedidos', '$492.000', 'Combo Familiar PoliEspecial x4')">Detalle</button></td>
+          </tr>
+          <!-- 4 -->
+          <tr>
+            <td class="client-id">#CLI-004</td>
+            <td>
+              <div class="client-profile">
+                <div class="avatar-circle" style="background: linear-gradient(135deg, #f59e0b, #ef4444);">VR</div>
+                <div>
+                  <div class="client-name">Valentina Rojas Martínez</div>
+                  <div class="client-email">valentina.rojas@email.com</div>
+                </div>
+              </div>
+            </td>
+            <td class="phone-cell">301 234 5678</td>
+            <td class="address-cell"><span class="address-main">Cra. 9 # 140-22, Torre 2 Apt 801</span></td>
+            <td><span class="address-zone">Cedritos</span></td>
+            <td><strong>5</strong></td>
+            <td class="money-cell">$145.000</td>
+            <td><span class="badge badge-activo">Activo</span></td>
+            <td><button class="action-btn" onclick="openDetail('Valentina Rojas Martínez', 'Cra. 9 # 140-22, Torre 2 Apt 801', '301 234 5678', '5 pedidos', '$145.000', 'Bowl Pollo Teriyaki + Té Helado')">Detalle</button></td>
+          </tr>
+          <!-- 5 -->
+          <tr>
+            <td class="client-id">#CLI-005</td>
+            <td>
+              <div class="client-profile">
+                <div class="avatar-circle" style="background: linear-gradient(135deg, #6366f1, #3b82f6);">MD</div>
+                <div>
+                  <div class="client-name">Mateo Alejandro Duque Salazar</div>
+                  <div class="client-email">mateo.duque@email.com</div>
+                </div>
+              </div>
+            </td>
+            <td class="phone-cell">318 901 2345</td>
+            <td class="address-cell"><span class="address-main">Calle 127 # 58-10, Int. 3</span></td>
+            <td><span class="address-zone">Suba</span></td>
+            <td><strong>3</strong></td>
+            <td class="money-cell">$98.000</td>
+            <td><span class="badge badge-nuevo">Nuevo</span></td>
+            <td><button class="action-btn" onclick="openDetail('Mateo Alejandro Duque Salazar', 'Calle 127 # 58-10, Int. 3', '318 901 2345', '3 pedidos', '$98.000', 'Sandwich Roast Beef + Papas')">Detalle</button></td>
+          </tr>
+          <!-- 6 -->
+          <tr>
+            <td class="client-id">#CLI-006</td>
+            <td>
+              <div class="client-profile">
+                <div class="avatar-circle" style="background: linear-gradient(135deg, #a855f7, #ec4899);">NV</div>
+                <div>
+                  <div class="client-name">Natalia Sofía Vargas Ortiz</div>
+                  <div class="client-email">natalia.vargas@email.com</div>
+                </div>
+              </div>
+            </td>
+            <td class="phone-cell">313 456 7890</td>
+            <td class="address-cell"><span class="address-main">Cra. 7 # 67-34, Apt 301</span></td>
+            <td><span class="address-zone">Chapinero</span></td>
+            <td><strong>18</strong></td>
+            <td class="money-cell">$560.000</td>
+            <td><span class="badge badge-vip">VIP</span></td>
+            <td><button class="action-btn" onclick="openDetail('Natalia Sofía Vargas Ortiz', 'Cra. 7 # 67-34, Apt 301', '313 456 7890', '18 pedidos', '$560.000', 'Costillas BBQ Premium + Aros Cebolla')">Detalle</button></td>
+          </tr>
+          <!-- 7 -->
+          <tr>
+            <td class="client-id">#CLI-007</td>
+            <td>
+              <div class="client-profile">
+                <div class="avatar-circle" style="background: linear-gradient(135deg, #14b8a6, #3b82f6);">DR</div>
+                <div>
+                  <div class="client-name">Daniel Santiago Romero Peña</div>
+                  <div class="client-email">daniel.romero@email.com</div>
+                </div>
+              </div>
+            </td>
+            <td class="phone-cell">316 789 0123</td>
+            <td class="address-cell"><span class="address-main">Calle 80 # 70-15</span></td>
+            <td><span class="address-zone">Engativá</span></td>
+            <td><strong>4</strong></td>
+            <td class="money-cell">$112.000</td>
+            <td><span class="badge badge-activo">Activo</span></td>
+            <td><button class="action-btn" onclick="openDetail('Daniel Santiago Romero Peña', 'Calle 80 # 70-15', '316 789 0123', '4 pedidos', '$112.000', 'Alitas Picantes x12 + Cerveza')">Detalle</button></td>
+          </tr>
+          <!-- 8 -->
+          <tr>
+            <td class="client-id">#CLI-008</td>
+            <td>
+              <div class="client-profile">
+                <div class="avatar-circle" style="background: linear-gradient(135deg, #f97316, #eab308);">MM</div>
+                <div>
+                  <div class="client-name">María Paula Mendoza Torres</div>
+                  <div class="client-email">maria.mendoza@email.com</div>
+                </div>
+              </div>
+            </td>
+            <td class="phone-cell">300 654 3210</td>
+            <td class="address-cell"><span class="address-main">Cra. 19 # 134-50, Bloque C</span></td>
+            <td><span class="address-zone">Cedritos</span></td>
+            <td><strong>7</strong></td>
+            <td class="money-cell">$230.000</td>
+            <td><span class="badge badge-activo">Activo</span></td>
+            <td><button class="action-btn" onclick="openDetail('María Paula Mendoza Torres', 'Cra. 19 # 134-50, Bloque C', '300 654 3210', '7 pedidos', '$230.000', 'Ensalada César con Pollo Grill')">Detalle</button></td>
+          </tr>
+          <!-- 9 -->
+          <tr>
+            <td class="client-id">#CLI-009</td>
+            <td>
+              <div class="client-profile">
+                <div class="avatar-circle" style="background: linear-gradient(135deg, #059669, #10b981);">SH</div>
+                <div>
+                  <div class="client-name">Sebastián David Herrera Gil</div>
+                  <div class="client-email">sebastian.herrera@email.com</div>
+                </div>
+              </div>
+            </td>
+            <td class="phone-cell">312 345 6789</td>
+            <td class="address-cell"><span class="address-main">Calle 63 # 35-40</span></td>
+            <td><span class="address-zone">Teusaquillo</span></td>
+            <td><strong>11</strong></td>
+            <td class="money-cell">$385.000</td>
+            <td><span class="badge badge-frecuente">Frecuente</span></td>
+            <td><button class="action-btn" onclick="openDetail('Sebastián David Herrera Gil', 'Calle 63 # 35-40', '312 345 6789', '11 pedidos', '$385.000', 'Parrillada Personal + Mazorca')">Detalle</button></td>
+          </tr>
+          <!-- 10 -->
+          <tr>
+            <td class="client-id">#CLI-010</td>
+            <td>
+              <div class="client-profile">
+                <div class="avatar-circle" style="background: linear-gradient(135deg, #ef4444, #f43f5e);">LC</div>
+                <div>
+                  <div class="client-name">Laura Ximena Castro Benítez</div>
+                  <div class="client-email">laura.castro@email.com</div>
+                </div>
+              </div>
+            </td>
+            <td class="phone-cell">317 890 1234</td>
+            <td class="address-cell"><span class="address-main">Cra. 50 # 100-25</span></td>
+            <td><span class="address-zone">Suba</span></td>
+            <td><strong>2</strong></td>
+            <td class="money-cell">$68.000</td>
+            <td><span class="badge badge-nuevo">Nuevo</span></td>
+            <td><button class="action-btn" onclick="openDetail('Laura Ximena Castro Benítez', 'Cra. 50 # 100-25', '317 890 1234', '2 pedidos', '$68.000', 'Wrap Vegetariano + Jugo Natural')">Detalle</button></td>
+          </tr>
+          <!-- 11 -->
+          <tr>
+            <td class="client-id">#CLI-011</td>
+            <td>
+              <div class="client-profile">
+                <div class="avatar-circle" style="background: linear-gradient(135deg, #3b82f6, #6366f1);">CN</div>
+                <div>
+                  <div class="client-name">Carlos Esteban Navarro Ruiz</div>
+                  <div class="client-email">carlos.navarro@email.com</div>
+                </div>
+              </div>
+            </td>
+            <td class="phone-cell">314 567 8901</td>
+            <td class="address-cell"><span class="address-main">Calle 116 # 15B-42, Apt 402</span></td>
+            <td><span class="address-zone">Santa Bárbara</span></td>
+            <td><strong>9</strong></td>
+            <td class="money-cell">$290.000</td>
+            <td><span class="badge badge-frecuente">Frecuente</span></td>
+            <td><button class="action-btn" onclick="openDetail('Carlos Esteban Navarro Ruiz', 'Calle 116 # 15B-42, Apt 402', '314 567 8901', '9 pedidos', '$290.000', 'Hamburguesa Angus + Cerveza Artesanal')">Detalle</button></td>
+          </tr>
+          <!-- 12 -->
+          <tr>
+            <td class="client-id">#CLI-012</td>
+            <td>
+              <div class="client-profile">
+                <div class="avatar-circle" style="background: linear-gradient(135deg, #8b5cf6, #d946ef);">DF</div>
+                <div>
+                  <div class="client-name">Daniela Marcela Flórez Vega</div>
+                  <div class="client-email">daniela.florez@email.com</div>
+                </div>
+              </div>
+            </td>
+            <td class="phone-cell">319 012 3456</td>
+            <td class="address-cell"><span class="address-main">Cra. 24 # 45C-12</span></td>
+            <td><span class="address-zone">Teusaquillo</span></td>
+            <td><strong>6</strong></td>
+            <td class="money-cell">$178.000</td>
+            <td><span class="badge badge-activo">Activo</span></td>
+            <td><button class="action-btn" onclick="openDetail('Daniela Marcela Flórez Vega', 'Cra. 24 # 45C-12', '319 012 3456', '6 pedidos', '$178.000', 'Pasta Carbonara + Tiramisú')">Detalle</button></td>
+          </tr>
+          <!-- 13 -->
+          <tr>
+            <td class="client-id">#CLI-013</td>
+            <td>
+              <div class="client-profile">
+                <div class="avatar-circle" style="background: linear-gradient(135deg, #e11d48, #be123c);">JP</div>
+                <div>
+                  <div class="client-name">Julián Ricardo Pardo Bernal</div>
+                  <div class="client-email">julian.pardo@email.com</div>
+                </div>
+              </div>
+            </td>
+            <td class="phone-cell">311 234 5678</td>
+            <td class="address-cell"><span class="address-main">Calle 138 # 54-20, Casa 12</span></td>
+            <td><span class="address-zone">Suba</span></td>
+            <td><strong>14</strong></td>
+            <td class="money-cell">$450.000</td>
+            <td><span class="badge badge-vip">VIP</span></td>
+            <td><button class="action-btn" onclick="openDetail('Julián Ricardo Pardo Bernal', 'Calle 138 # 54-20, Casa 12', '311 234 5678', '14 pedidos', '$450.000', 'Tacos Mix al Pastor x6 + Nachos')">Detalle</button></td>
+          </tr>
+          <!-- 14 -->
+          <tr>
+            <td class="client-id">#CLI-014</td>
+            <td>
+              <div class="client-profile">
+                <div class="avatar-circle" style="background: linear-gradient(135deg, #0284c7, #0369a1);">GS</div>
+                <div>
+                  <div class="client-name">Gabriela Lucía Suárez Beltrán</div>
+                  <div class="client-email">gabriela.suarez@email.com</div>
+                </div>
+              </div>
+            </td>
+            <td class="phone-cell">305 890 1234</td>
+            <td class="address-cell"><span class="address-main">Cra. 11 # 85-32, Oficina 601</span></td>
+            <td><span class="address-zone">Chapinero</span></td>
+            <td><strong>10</strong></td>
+            <td class="money-cell">$360.000</td>
+            <td><span class="badge badge-frecuente">Frecuente</span></td>
+            <td><button class="action-btn" onclick="openDetail('Gabriela Lucía Suárez Beltrán', 'Cra. 11 # 85-32, Oficina 601', '305 890 1234', '10 pedidos', '$360.000', 'Sándwich Gourmet de Pavo + Limonada')">Detalle</button></td>
+          </tr>
+          <!-- 15 -->
+          <tr>
+            <td class="client-id">#CLI-015</td>
+            <td>
+              <div class="client-profile">
+                <div class="avatar-circle" style="background: linear-gradient(135deg, #64748b, #475569);">DQ</div>
+                <div>
+                  <div class="client-name">Diego Fernando Quintero Marín</div>
+                  <div class="client-email">diego.quintero@email.com</div>
+                </div>
+              </div>
+            </td>
+            <td class="phone-cell">318 456 7890</td>
+            <td class="address-cell"><span class="address-main">Calle 45 # 13-22</span></td>
+            <td><span class="address-zone">Chapinero</span></td>
+            <td><strong>1</strong></td>
+            <td class="money-cell">$42.000</td>
+            <td><span class="badge badge-nuevo">Nuevo</span></td>
+            <td><button class="action-btn" onclick="openDetail('Diego Fernando Quintero Marín', 'Calle 45 # 13-22', '318 456 7890', '1 pedido', '$42.000', 'Hamburguesa Clásica + Gaseosa')">Detalle</button></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="table-footer">
+        <div>Mostrando <span id="visible-count">15</span> de 15 clientes totales cargados en pantalla</div>
+        <div style="display:flex; gap:6px;">
+          <button class="action-btn" style="background: var(--border-subtle)">1</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Detail Modal -->
+  <div class="modal-overlay" id="detailModal" onclick="closeModal(event)">
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <h3 id="modalName">Detalle del Cliente</h3>
+        <button class="close-modal" onclick="closeModal()">&times;</button>
+      </div>
+      <div class="modal-body" id="modalBody">
+        <!-- populated dynamically -->
+      </div>
+      <div style="margin-top:20px; display:flex; justify-content:flex-end; gap:10px;">
+        <button class="btn btn-secondary" onclick="closeModal()">Cerrar</button>
+        <button class="btn btn-primary" onclick="alert('Iniciando nuevo pedido a domicilio para este cliente...'); closeModal();">Crear Pedido a Domicilio</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function filterTable() {
+      const search = document.getElementById('searchInput').value.toLowerCase();
+      const zone = document.getElementById('zoneFilter').value.toLowerCase();
+      const status = document.getElementById('statusFilter').value.toLowerCase();
+      const rows = document.querySelectorAll('#tableBody tr');
+      let visible = 0;
+
+      rows.forEach(row => {
+        const text = row.innerText.toLowerCase();
+        const matchesSearch = !search || text.includes(search);
+        const matchesZone = !zone || text.includes(zone);
+        const matchesStatus = !status || text.includes(status);
+
+        if (matchesSearch && matchesZone && matchesStatus) {
+          row.style.display = '';
+          visible++;
+        } else {
+          row.style.display = 'none';
+        }
+      });
+
+      document.getElementById('visible-count').innerText = visible;
+    }
+
+    function openDetail(name, address, phone, orders, total, lastOrder) {
+      document.getElementById('modalName').innerText = name;
+      document.getElementById('modalBody').innerHTML = `
+        <p><strong>Teléfono:</strong> ${phone}</p>
+        <p><strong>Dirección de Entrega:</strong> ${address}</p>
+        <p><strong>Historial acumulado:</strong> ${orders} (${total})</p>
+        <div style="margin-top:14px; padding:12px; background:rgba(255,255,255,0.04); border-radius:8px; border:1px solid var(--border-subtle);">
+          <div style="font-size:0.75rem; text-transform:uppercase; color:var(--text-muted); font-weight:600; margin-bottom:4px;">Último Pedido a Domicilio Despachado:</div>
+          <div style="font-size:0.9rem; color:#ffffff; font-weight:500;">${lastOrder}</div>
+          <div style="font-size:0.78rem; color:#10b981; margin-top:4px;">&bull; Entregado satisfactoriamente &bull; Repartidor: Carlos Gómez</div>
+        </div>
+      `;
+      document.getElementById('detailModal').style.display = 'flex';
+    }
+
+    function closeModal(e) {
+      document.getElementById('detailModal').style.display = 'none';
+    }
+  </script>
+</body>
+</html>
