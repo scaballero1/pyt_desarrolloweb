@@ -1,12 +1,12 @@
 package managers;
-
+ 
 import dao.PedidoDAO;
-// import dao.MesaDAO; // TODO: Descomentar cuando Carlos entregue el DAO de Mesas
+import dao.MesaDAO;
 import entities.Pedido;
-
+ 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-
+ 
 /**
  * Gestor de lógica de negocio para las operaciones del Mesero.
  * 
@@ -30,25 +30,21 @@ import java.time.format.DateTimeFormatter;
  * @author PoliRestaurante
  */
 public class MeseroManager {
-
+ 
     // ==================== ATRIBUTOS ====================
-
+ 
     /** DAO para operaciones CRUD sobre la tabla Pedidos. */
     private PedidoDAO pedidoDAO;
-
-    /**
-     * DAO para operaciones CRUD sobre la tabla Mesas.
-     * TODO: Pendiente de integración — Carlos está desarrollando MesaDAO.
-     * Descomentar cuando esté disponible.
-     */
-    // private MesaDAO mesaDAO;
-
+ 
+    /** DAO para operaciones CRUD sobre la tabla Mesas. */
+    private MesaDAO mesaDAO;
+ 
     /** Formato estándar para las fechas en los registros de auditoría. */
     private static final DateTimeFormatter FORMATO_AUDITORIA = 
             DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-
+ 
     // ==================== CONSTRUCTOR ====================
-
+ 
     /**
      * Constructor que inicializa las dependencias de la capa DAO.
      * 
@@ -59,11 +55,11 @@ public class MeseroManager {
      */
     public MeseroManager() {
         this.pedidoDAO = new PedidoDAO();
-        // this.mesaDAO = new MesaDAO(); // TODO: Descomentar cuando Carlos entregue MesaDAO
+        this.mesaDAO = new MesaDAO();
     }
-
+ 
     // ==================== MÉTODOS DE NEGOCIO ====================
-
+ 
     /**
      * HU-01: Registra un nuevo pedido en el sistema y, si corresponde,
      * marca la mesa asociada como OCUPADA.
@@ -87,29 +83,35 @@ public class MeseroManager {
         try {
             // Paso 1: Crear el pedido en la base de datos
             boolean pedidoCreado = pedidoDAO.crear(pedido);
-
+ 
             if (pedidoCreado) {
                 System.out.println("[MeseroManager] ✓ Pedido registrado exitosamente. "
                         + "Tipo: " + pedido.getTipoPedido()
                         + " | Mesero ID: " + pedido.getMeseroId()
                         + " | Fecha: " + LocalDateTime.now().format(FORMATO_AUDITORIA));
-
+ 
                 // Paso 2: Si el pedido tiene mesa asociada, marcarla como OCUPADA
                 if (pedido.getMesaId() != null) {
-                    // TODO [DEPENDENCIA - Carlos]: Descomentar cuando MesaDAO esté disponible.
-                    // mesaDAO.actualizarEstado(pedido.getMesaId(), "OCUPADA");
-                    System.out.println("[MeseroManager] → Mesa ID " + pedido.getMesaId()
-                            + " marcada como OCUPADA. (Pendiente integración MesaDAO)");
+                    boolean mesaActualizada = mesaDAO.actualizarEstado(pedido.getMesaId(), "OCUPADA");
+ 
+                    if (mesaActualizada) {
+                        System.out.println("[MeseroManager] → Mesa ID " + pedido.getMesaId()
+                                + " marcada como OCUPADA.");
+                    } else {
+                        System.err.println("[MeseroManager] ⚠ El pedido se registró, pero no "
+                                + "se pudo actualizar el estado de la Mesa ID "
+                                + pedido.getMesaId() + ".");
+                    }
                 }
-
+ 
                 return true;
-
+ 
             } else {
                 System.err.println("[MeseroManager] ✗ Error al registrar el pedido. "
                         + "Verifique los datos e intente nuevamente.");
                 return false;
             }
-
+ 
         } catch (Exception e) {
             System.err.println("[MeseroManager] ✗ Excepción inesperada al registrar pedido: "
                     + e.getMessage());
@@ -117,7 +119,7 @@ public class MeseroManager {
             return false;
         }
     }
-
+ 
     /**
      * HU-03: Marca un pedido como ENTREGADO y libera la mesa asociada.
      * 
@@ -142,26 +144,31 @@ public class MeseroManager {
         try {
             // Paso 1: Actualizar el estado del pedido a ENTREGADO
             boolean pedidoEntregado = pedidoDAO.actualizarEstado(pedidoId, "ENTREGADO");
-
+ 
             if (pedidoEntregado) {
                 System.out.println("[MeseroManager] ✓ Pedido ID " + pedidoId
                         + " marcado como ENTREGADO."
                         + " | Fecha: " + LocalDateTime.now().format(FORMATO_AUDITORIA));
-
+ 
                 // Paso 2: Liberar la mesa asociada
-                // TODO [DEPENDENCIA - Carlos]: Descomentar cuando MesaDAO esté disponible.
-                // mesaDAO.actualizarEstado(mesaId, "LIBRE");
-                System.out.println("[MeseroManager] → Mesa ID " + mesaId
-                        + " liberada (estado: LIBRE). (Pendiente integración MesaDAO)");
-
+                boolean mesaLiberada = mesaDAO.actualizarEstado(mesaId, "LIBRE");
+ 
+                if (mesaLiberada) {
+                    System.out.println("[MeseroManager] → Mesa ID " + mesaId
+                            + " liberada (estado: LIBRE).");
+                } else {
+                    System.err.println("[MeseroManager] ⚠ El pedido se marcó como ENTREGADO, "
+                            + "pero no se pudo liberar la Mesa ID " + mesaId + ".");
+                }
+ 
                 return true;
-
+ 
             } else {
                 System.err.println("[MeseroManager] ✗ No se pudo entregar el pedido ID "
                         + pedidoId + ". Verifique que exista y su estado sea válido.");
                 return false;
             }
-
+ 
         } catch (Exception e) {
             System.err.println("[MeseroManager] ✗ Excepción inesperada al entregar pedido ID "
                     + pedidoId + ": " + e.getMessage());
@@ -169,7 +176,7 @@ public class MeseroManager {
             return false;
         }
     }
-
+ 
     /**
      * HU-07: Anula (cancela) un pedido y registra el motivo para auditoría.
      * 
@@ -196,7 +203,7 @@ public class MeseroManager {
             // Paso 1: Ejecutar la cancelación lógica en el DAO
             // El DAO ya valida internamente los estados no cancelables (HU-07)
             boolean pedidoCancelado = pedidoDAO.cancelarPedido(pedidoId);
-
+ 
             if (pedidoCancelado) {
                 // Paso 2: Registro de auditoría en consola
                 System.out.println("╔══════════════════════════════════════════════════════╗");
@@ -206,16 +213,16 @@ public class MeseroManager {
                 System.out.println("║  Motivo     : " + motivo);
                 System.out.println("║  Fecha/Hora : " + LocalDateTime.now().format(FORMATO_AUDITORIA));
                 System.out.println("╚══════════════════════════════════════════════════════╝");
-
+ 
                 return true;
-
+ 
             } else {
                 System.err.println("[MeseroManager] ✗ No se pudo cancelar el pedido ID "
                         + pedidoId + ". Puede que ya esté entregado, cancelado,"
                         + " o que el ID no exista.");
                 return false;
             }
-
+ 
         } catch (Exception e) {
             System.err.println("[MeseroManager] ✗ Excepción inesperada al anular pedido ID "
                     + pedidoId + ": " + e.getMessage());
